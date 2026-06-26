@@ -1,206 +1,246 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NutriSmart 智能调奶器 App 交互 Demo</title>
+<title>NutriSmart Formula Maker App Demo</title>
 <style>
 /* ===== Reset ===== */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;font-family:"PingFang SC","Helvetica Neue",Arial,sans-serif;font-size:14px;color:#333;overflow:hidden;}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemSystem,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#2D3436;overflow:hidden;}
 
-/* ===== 配色变量 ===== */
+/* ===== Color Palette - Western / Overseas Style ===== */
 :root{
-  --primary:#1A3A5C; --accent:#E87A2E; --bg:#F5F5F5; --text:#333333;
-  --white:#FFFFFF; --green:#2E8B57; --red:#C0392B; --blue2:#3A5A7C;
-  --lightblue:#CCDDEE; --gray:#999999; --line:#E5E5E5;
+  --primary:#2D3436; --accent:#8B6914; --accent-light:#C4A35A;
+  --bg:#FDF8F3; --bg-warm:#FAF5EE; --text:#2D3436; --text-secondary:#636E72;
+  --white:#FFFFFF; --green:#27AE60; --red:#E74C3C; --orange:#E67E22;
+  --blue:#2980B9; --line:#E8E2DA; --card-shadow:0 1px 4px rgba(0,0,0,.06);
+  --radius:16px; --radius-sm:12px; --radius-xs:8px;
 }
 
-/* ===== 三栏布局 ===== */
-.app{display:grid;grid-template-columns:280px 1fr 360px;height:100vh;min-width:1200px;background:#ECECEC;}
-.sidebar-left{background:var(--primary);color:#fff;overflow-y:auto;}
-.stage{display:flex;align-items:center;justify-content:center;background:#E8E8E8;overflow:hidden;position:relative;}
+/* ===== Three-Column Layout ===== */
+.app{display:grid;grid-template-columns:270px 1fr 360px;height:100vh;min-width:1180px;background:#F0EBE3;}
+.sidebar-left{background:#2D3436;color:#fff;overflow-y:auto;}
+.stage{display:flex;align-items:center;justify-content:center;background:#EDE7DD;overflow:hidden;position:relative;}
 .sidebar-right{background:#fff;border-left:1px solid var(--line);overflow-y:auto;}
 
-/* ===== 左栏 ===== */
-.logo{padding:20px 20px 16px;font-size:17px;font-weight:700;color:var(--accent);border-bottom:1px solid var(--blue2);position:sticky;top:0;background:var(--primary);z-index:5;}
-.logo small{display:block;font-size:11px;color:var(--lightblue);font-weight:400;margin-top:2px;}
+/* ===== Left Sidebar ===== */
+.logo{padding:20px 18px 14px;font-size:17px;font-weight:700;color:var(--accent-light);border-bottom:1px solid rgba(255,255,255,.1);position:sticky;top:0;background:#2D3436;z-index:5;}
+.logo small{display:block;font-size:10px;color:rgba(255,255,255,.4);font-weight:400;margin-top:3px;letter-spacing:.3px;}
 .tree{padding:8px 0;}
-.tree-module{margin-top:8px;}
-.tree-module-title{padding:8px 20px 4px;font-size:11px;color:var(--lightblue);font-weight:600;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;}
-.tree-item{padding:9px 20px 9px 28px;font-size:13px;color:#DDE4EE;cursor:pointer;display:flex;align-items:center;gap:8px;border-left:3px solid transparent;transition:background .15s;}
+.tree-module{margin-top:6px;}
+.tree-module-title{padding:8px 18px 4px;font-size:10px;color:rgba(255,255,255,.35);font-weight:700;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;user-select:none;}
+.tree-item{padding:9px 18px 9px 24px;font-size:13px;color:#B2BEC3;cursor:pointer;display:flex;align-items:center;gap:8px;border-left:3px solid transparent;transition:background .15s;}
 .tree-item:hover{background:rgba(255,255,255,.06);}
-.tree-item.active{background:rgba(232,122,46,.15);border-left-color:var(--accent);color:#fff;font-weight:600;}
-.tree-num{font-size:10px;color:var(--gray);width:16px;}
-.tree-tag{font-size:9px;padding:1px 5px;border-radius:8px;font-weight:600;}
-.tag-l1{background:#555;color:#fff;}
-.tag-l2{background:#3A5A7C;color:#fff;}
-.tag-l3{background:var(--primary);color:#fff;}
-.tag-l4{background:var(--accent);color:#fff;}
-.tag-l5{background:linear-gradient(90deg,#E87A2E,#C0392B);color:#fff;}
+.tree-item.active{background:rgba(139,105,20,.15);border-left-color:var(--accent-light);color:#fff;font-weight:600;}
+.tree-num{font-size:10px;color:rgba(255,255,255,.25);width:16px;}
+.tree-tag{font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+.tag-l1{background:rgba(255,255,255,.15);color:#DFE6E9;}
+.tag-l2{background:rgba(139,105,20,.5);color:#FFEAA7;}
+.tag-l3{background:var(--accent);color:#fff;}
+.tag-l4{background:linear-gradient(135deg,#E67E22,#F39C12);color:#fff;}
+.tag-l5{background:linear-gradient(135deg,#8E44AD,#9B59B6);color:#fff;}
+.tag-entry{background:#27AE60;color:#fff;}
 
-/* ===== iPhone 边框 ===== */
+/* ===== iPhone Frame ===== */
 .iphone-wrap{transform-origin:center center;}
-.iphone{width:375px;height:760px;background:#1a1a1a;border-radius:48px;padding:12px;box-shadow:0 0 0 2px #2a2a2a,0 30px 70px rgba(0,0,0,.4),inset 0 0 4px rgba(255,255,255,.08);position:relative;}
-.screen{width:100%;height:100%;background:var(--bg);border-radius:38px;overflow:hidden;position:relative;display:flex;flex-direction:column;}
-.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:150px;height:26px;background:#1a1a1a;border-radius:0 0 18px 18px;z-index:50;}
-.home-indicator{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:rgba(255,255,255,.5);border-radius:3px;z-index:50;}
+.iphone{width:375px;height:760px;background:#1a1a1a;border-radius:50px;padding:11px;box-shadow:0 0 0 2px #333,0 30px 70px rgba(0,0,0,.35),inset 0 0 4px rgba(255,255,255,.07);position:relative;}
+.screen{width:100%;height:100%;background:var(--bg);border-radius:40px;overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:148px;height:28px;background:#1a1a1a;border-radius:0 0 20px 20px;z-index:50;}
+.home-indicator{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:126px;height:5px;background:rgba(255,255,255,.45);border-radius:3px;z-index:50;}
 
-/* ===== 屏幕内通用 ===== */
+/* ===== Screen Internals ===== */
 .status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px 0 32px;font-size:13px;font-weight:600;color:#000;flex-shrink:0;z-index:10;position:relative;}
 .status-bar .sb-right{display:flex;align-items:center;gap:5px;}
 .sb-icon{width:16px;height:11px;}
-.nav-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--primary);color:#fff;flex-shrink:0;}
-.nav-bar .nav-title{font-size:16px;font-weight:600;}
-.nav-bar .nav-back{font-size:20px;cursor:pointer;width:30px;}
-.nav-bar .nav-right{font-size:13px;cursor:pointer;width:30px;text-align:right;}
+.nav-bar{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--white);color:var(--primary);flex-shrink:0;border-bottom:1px solid var(--line);}
+.nav-bar .nav-title{font-size:17px;font-weight:600;}
+.nav-bar .nav-back{font-size:22px;cursor:pointer;width:36px;display:flex;align-items:center;justify-content:center;color:var(--primary);}
+.nav-bar .nav-right{font-size:15px;cursor:pointer;width:36px;text-align:right;display:flex;align-items:center;justify-content:center;gap:4px;}
 .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .content::-webkit-scrollbar{width:0;}
 
-/* ===== Tab Bar ===== */
-.tab-bar{height:73px;display:flex;align-items:flex-start;justify-content:space-around;padding-top:8px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);flex-shrink:0;}
-.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--gray);cursor:pointer;width:60px;}
-.tab.active{color:var(--primary);}
+/* ===== Tab Bar (Device Hub only) ===== */
+.tab-bar{height:73px;display:flex;align-items:flex-start;justify-content:space-around;padding-top:8px;background:rgba(255,255,255,.97);border-top:1px solid var(--line);flex-shrink:0;}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text-secondary);cursor:pointer;width:60px;}
+.tab.active{color:var(--accent);}
 .tab-icon{font-size:20px;line-height:1;}
 .tab-mid{position:relative;margin-top:-18px;}
-.tab-mid-circle{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:300;box-shadow:0 4px 12px rgba(232,122,46,.4);border:4px solid #fff;}
-.tab-mid.active .tab-mid-circle{background:var(--accent);}
+.tab-mid-circle{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:300;box-shadow:0 4px 12px rgba(139,105,20,.35);border:4px solid #fff;}
 
-/* ===== App 内通用组件 ===== */
-.card{background:#fff;border-radius:14px;margin:12px 14px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
-.card-dark{background:var(--primary);color:#fff;}
-.card-accent{background:#FFF3E8;border:1px solid #F5D9C0;}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:22px;font-size:14px;font-weight:600;cursor:pointer;border:none;}
+/* ===== Common Components ===== */
+.card{background:var(--white);border-radius:var(--radius-sm);margin:10px 14px;padding:14px;box-shadow:var(--card-shadow);}
+.card-flat{background:var(--white);border-radius:var(--radius-sm);padding:14px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 22px;border-radius:24px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s;}
+.btn:active{opacity:.75;}
 .btn-accent{background:var(--accent);color:#fff;}
--btn-primary{background:var(--primary);color:#fff;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-outline{background:transparent;border:1.5px solid var(--accent);color:var(--accent);}
-.btn-sm{padding:6px 14px;font-size:12px;border-radius:16px;}
+.btn-outline-gray{background:transparent;border:1.5px solid #CCC;color:var(--text-secondary);}
+.btn-success{background:var(--green);color:#fff;}
+.btn-sm{padding:7px 15px;font-size:12px;border-radius:18px;}
 .btn-block{display:block;width:100%;}
-.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;}
-.pill-blue{background:#E8EFF7;color:var(--primary);}
-.pill-orange{background:#FFF3E8;color:var(--accent);}
-.pill-green{background:#E8F5EE;color:var(--green);}
-.pill-red{background:#FBE9E7;color:var(--red);}
-.pill-beta{background:var(--accent);color:#fff;}
-.section-title{font-size:12px;color:var(--gray);font-weight:600;padding:12px 16px 4px;text-transform:uppercase;letter-spacing:.3px;}
+.pill{display:inline-block;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;}
+.pill-blue{background:#EBF5FB;color:var(--blue);}
+.pill-orange{background:#FEF5E7;color:var(--orange);}
+.pill-green{background:#EAFAF1;color:var(--green);}
+.pill-red{background:#FDEDEC;color:var(--red);}
+.pill-beta{background:var(--orange);color:#fff;}
+.pill-v3{background:linear-gradient(135deg,#8E44AD,#9B59B6);color:#fff;}
+.section-title{font-size:12px;color:var(--text-secondary);font-weight:700;padding:14px 16px 6px;text-transform:uppercase;letter-spacing:.5px;}
 .row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
 .divider{height:1px;background:var(--line);margin:8px 0;}
-.list-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-bottom:1px solid #F0F0F0;}
+.list-item{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--white);border-bottom:1px solid #F5F2EC;}
 .list-item:last-child{border-bottom:none;}
 
-/* ===== 右栏 ===== */
-.desc-panel{padding:24px 22px;}
-.dp-level{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;}
-.dp-module{font-size:12px;color:var(--gray);}
-.dp-title{font-size:20px;font-weight:700;color:var(--primary);margin-bottom:4px;line-height:1.3;}
-.dp-hr{height:2px;background:var(--accent);width:40px;margin:12px 0 16px;border-radius:1px;}
-.dp-section{margin-bottom:16px;}
-.dp-label{font-size:12px;font-weight:700;color:var(--blue2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px;}
-.dp-text{font-size:13px;color:var(--text);line-height:1.6;}
-.dp-list{font-size:13px;color:var(--text);line-height:1.8;list-style:none;}
-.dp-list li{padding-left:14px;position:relative;}
-.dp-list li::before{content:"•";color:var(--accent);position:absolute;left:0;font-weight:700;}
-.dp-diff{background:#F8FAFC;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:8px;padding:12px;font-size:12px;line-height:1.6;}
-.dp-diff strong{color:var(--red);}
+/* ===== Device List Page Styles ===== */
+.dev-list-header{padding:20px 16px 12px;}
+.dev-list-header h2{font-size:22px;font-weight:700;color:var(--primary);}
+.dev-list-header p{font-size:13px;color:var(--text-secondary);margin-top:3px;}
+.dev-card{background:var(--white);border-radius:var(--radius);margin:10px 14px;padding:16px;box-shadow:var(--card-shadow);cursor:pointer;transition:transform .15s,border-color .15s;border:2px solid transparent;}
+.dev-card:active{transform:scale(.98);}
+.dev-card.selected{border-color:var(--accent);}
+.dev-card-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.dev-icon{width:48px;height:48px;border-radius:14px;background:var(--bg-warm);display:flex;align-items:center;justify-content:center;font-size:24px;}
+.dev-info{flex:1;}
+.dev-name{font-size:15px;font-weight:700;color:var(--primary);}
+.dev-status{font-size:12px;color:var(--green);margin-top:2px;display:flex;align-items:center;gap:4px;}
+.dev-status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.dev-stats{display:flex;gap:12px;}
+.dev-stat{text-align:center;flex:1;}
+.dev-stat-val{font-size:16px;font-weight:700;color:var(--primary);}
+.dev-stat-label{font-size:10px;color:var(--text-secondary);margin-top:1px;}
+.add-device-btn{margin:14px;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border:2px dashed #CCC;border-radius:var(--radius);color:var(--text-secondary);font-size:14px;font-weight:600;cursor:pointer;background:transparent;}
+.add-device-btn:active{background:var(--bg);}
 
-/* ===== 各页面专用样式 ===== */
-/* P1 Dashboard */
-.dash-greeting{padding:16px 16px 8px;}
-.dash-overview{background:var(--primary);border-radius:16px;margin:0 14px;padding:16px;color:#fff;}
-.dash-overview .big{font-size:28px;font-weight:700;}
-.dash-overview .sub{font-size:12px;color:var(--lightblue);margin-top:2px;}
-.dash-fab{display:flex;align-items:center;gap:14px;padding:16px 14px;}
-.dash-fab-btn{width:72px;height:72px;border-radius:50%;background:var(--accent);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:600;box-shadow:0 4px 16px rgba(232,122,46,.35);cursor:pointer;flex-shrink:0;}
-.dash-fab-btn span{font-size:22px;line-height:1;}
-.ring-small{width:48px;height:48px;}
-.dash-timeline-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:12px;}
-.dash-timeline-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+/* ===== Device Dashboard (Reference Layout) Styles ===== */
+.ddash-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0;}
+.ddash-icon-btn{width:38px;height:38px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 1px 4px rgba(0,0,0,.08);cursor:pointer;}
+.ddash-device-area{display:flex;flex-direction:column;align-items:center;padding:10px 0 4px;position:relative;}
+.ddash-device-img{width:160px;height:180px;border-radius:20px;background:linear-gradient(145deg,#E8E2D8,#DDD5C8);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;}
+.ddash-float-stat{position:absolute;padding:6px 12px;border-radius:20px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;z-index:2;}
+.ddash-float-stat.left{left:-10px;top:45%;}
+.ddash-float-stat.right{right:-10px;top:45%;}
+.ddash-lock{position:absolute;left:12px;top:55%;width:34px;height:34px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 1px 4px rgba(0,0,0,.08);z-index:2;}
+.ddash-toggle{display:flex;background:var(--white);border-radius:28px;padding:3px;margin:12px 14px 0;box-shadow:var(--card-shadow);}
+.ddash-toggle-item{flex:1;text-align:center;padding:9px 0;border-radius:25px;font-size:14px;font-weight:600;cursor:pointer;color:var(--text-secondary);transition:all .2s;}
+.ddash-toggle-item.active{background:var(--accent);color:#fff;}
+.ddash-brand-card{background:var(--white);border-radius:var(--radius-sm);margin:10px 14px;padding:14px;box-shadow:var(--card-shadow);display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.ddash-brand-info{}
+.ddash-brand-name{font-size:16px;font-weight:700;color:var(--primary);}
+.ddash-brand-detail{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+.ddash-stepper-card{background:var(--white);border-radius:var(--radius-sm);margin:8px 14px;padding:14px;box-shadow:var(--card-shadow);}
+.ddash-stepper-label{font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.ddash-stepper{display:flex;align-items:center;justify-content:space-between;}
+.ddash-stepper-btn{width:42px;height:42px;border-radius:50%;background:var(--bg);border:none;font-size:22px;font-weight:300;color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ddash-stepper-btn:active{background:var(--line);}
+.ddash-stepper-val{font-size:22px;font-weight:700;color:var(--primary);}
+.ddash-hint{font-size:12px;color:var(--text-secondary);text-align:center;margin-top:6px;}
+.ddash-temp-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;}
+.ddash-temp-label{font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;}
+.ddash-bottom-bar{display:flex;align-items:center;gap:12px;padding:14px 14px 20px;}
+.ddash-power-btn{width:52px;height:52px;border-radius:50%;background:var(--white);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--text-secondary);cursor:pointer;flex-shrink:0;box-shadow:var(--card-shadow);}
+.ddash-start-btn{flex:1;height:52px;border-radius:26px;background:var(--accent);color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 4px 16px rgba(139,105,20,.3);}
+.ddash-start-btn:active{opacity:.85;}
 
-/* P2 出奶 */
-.brew-step{font-size:12px;color:var(--gray);padding:14px 16px 4px;font-weight:600;}
+/* ===== Brew Page ===== */
+.brew-step{font-size:12px;color:var(--text-secondary);padding:14px 16px 4px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
 .brew-preset{display:flex;gap:10px;padding:0 14px;overflow-x:auto;}
-.brew-preset-card{min-width:110px;background:#fff;border-radius:12px;padding:14px;text-align:center;border:2px solid transparent;cursor:pointer;}
-.brew-preset-card.sel{border-color:var(--accent);background:#FFF8F2;}
+.brew-preset-card{min-width:108px;background:var(--white);border-radius:var(--radius-xs);padding:14px;text-align:center;border:2px solid transparent;cursor:pointer;box-shadow:var(--card-shadow);}
+.brew-preset-card.sel{border-color:var(--accent);background:#FEFBF3;}
 .brew-preset-card .oz{font-size:22px;font-weight:700;color:var(--primary);}
-.brew-confirm{padding:20px 14px;}
-.brew-param{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid #F0F0F0;}
+.brew-param{display:flex;justify-content:space-between;padding:9px 0;font-size:13px;border-bottom:1px solid #F5F2EC;}
+.brew-confirm{padding:18px 14px;}
 .brew-anim{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center;}
 .brew-ring{width:160px;height:160px;position:relative;margin-bottom:16px;}
-.brew-ring-bg{fill:none;stroke:#E5E5E5;stroke-width:8;}
+.brew-ring-bg{fill:none;stroke:#E8E2D8;stroke-width:8;}
 .brew-ring-fg{fill:none;stroke:var(--accent);stroke-width:8;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .3s;}
 .brew-ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
 .brew-ring-text .g{font-size:24px;font-weight:700;color:var(--primary);}
-.brew-ring-text .l{font-size:11px;color:var(--gray);}
+.brew-ring-text .l{font-size:11px;color:var(--text-secondary);}
 .brew-done{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
 .brew-done-check{width:80px;height:80px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:20px;}
 
-/* P3 扫码 */
+/* ===== Scan Page ===== */
 .scan-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a1a;position:relative;overflow:hidden;}
 .scan-frame{width:220px;height:120px;border:2px solid var(--accent);border-radius:8px;position:relative;z-index:2;}
-.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#E87A2E,transparent);animation:scanMove 2s ease-in-out infinite;z-index:3;}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scanMove 2s ease-in-out infinite;z-index:3;}
 @keyframes scanMove{0%,100%{top:0;}50%{top:calc(100% - 2px);}}
 .scan-hint{color:#fff;font-size:13px;margin-top:20px;z-index:2;}
 .scan-bottom{padding:16px;text-align:center;background:#1a1a1a;color:var(--accent);font-size:13px;cursor:pointer;}
 
-/* P4 记录 */
+/* ===== Record Page ===== */
 .rec-day{font-size:13px;font-weight:700;color:var(--primary);padding:12px 16px 6px;}
-.rec-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;border-bottom:1px solid #F5F5F5;cursor:pointer;}
-.rec-time{font-size:12px;color:var(--gray);width:42px;flex-shrink:0;}
+.rec-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--white);border-bottom:1px solid #F5F2EC;cursor:pointer;}
+.rec-time{font-size:12px;color:var(--text-secondary);width:42px;flex-shrink:0;}
 .rec-amount{font-size:15px;font-weight:600;color:var(--primary);width:50px;}
-.rec-dev{font-size:11px;flex:1;}
+.rec-dev{font-size:11px;flex:1;color:var(--text-secondary);}
 .rec-badge{font-size:10px;padding:2px 6px;border-radius:8px;}
 
-/* P5 库存 */
+/* ===== Inventory Page ===== */
 .inv-ring-wrap{display:flex;align-items:center;gap:16px;}
 .inv-bar{display:flex;align-items:flex-end;gap:6px;height:60px;padding:0 4px;}
-.inv-bar-col{flex:1;background:var(--accent);border-radius:3px 3px 0 0;opacity:.7;min-height:4px;}
+.inv-bar-col{flex:1;background:var(--accent);border-radius:3px 3px 0 0;opacity:.65;min-height:4px;}
 
-/* P6 生长曲线 */
-.growth-seg{display:flex;margin:0 14px;background:#EBEBEB;border-radius:8px;padding:2px;}
-.growth-seg-item{flex:1;text-align:center;padding:7px;font-size:12px;color:var(--gray);border-radius:6px;cursor:pointer;}
-.growth-seg-item.sel{background:#fff;color:var(--primary);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+/* ===== Growth Chart Page ===== */
+.growth-seg{display:flex;margin:0 14px;background:#EEE9E0;border-radius:8px;padding:2px;}
+.growth-seg-item{flex:1;text-align:center;padding:7px;font-size:12px;color:var(--text-secondary);border-radius:6px;cursor:pointer;}
+.growth-seg-item.sel{background:var(--white);color:var(--primary);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.06);}
 
-/* P7 偏差报告 */
+/* ===== Accuracy Report ===== */
 .dev-bar{display:flex;align-items:center;gap:6px;height:80px;}
 .dev-bar-col{flex:1;border-radius:3px 3px 0 0;min-height:6px;position:relative;}
-.dev-bar-val{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--gray);}
+.dev-bar-val{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text-secondary);}
 
-/* P8 预警 */
-.alert-card{background:#FFF3E8;border:1px solid #F5D9C0;border-radius:12px;padding:14px;margin:12px 14px;}
+/* ===== Alert Page ===== */
+.alert-card{background:#FEF5E7;border:1px solid #FCEBBF;border-radius:var(--radius-sm);padding:14px;margin:12px 14px;}
 
-/* P9 AI建议 */
-.ai-card{background:linear-gradient(135deg,#FFF3E8,#FFE8D6);border-radius:14px;margin:12px 14px;padding:16px;}
-.ai-suggestion{background:#fff;border-radius:10px;padding:14px;margin-top:10px;}
+/* ===== AI Suggestion Page ===== */
+.ai-card{background:linear-gradient(135deg,#FEF5E7,#FDEBD0);border-radius:var(--radius);margin:12px 14px;padding:16px;}
+.ai-suggestion{background:var(--white);border-radius:10px;padding:14px;margin-top:10px;}
 
-/* P12 生态 */
-.eco-device{display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;margin-bottom:8px;}
+/* ===== Ecosystem Page ===== */
+.eco-device{display:flex;align-items:center;gap:12px;padding:12px;background:var(--white);border-radius:10px;margin-bottom:8px;}
 .eco-dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
 
-/* P11 多用户 */
-.role-tag{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600;}
+/* ===== Multi-user Page ===== */
+.role-tag{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:700;}
 .role-admin{background:var(--primary);color:#fff;}
-.role-operator{background:#E8EFF7;color:var(--blue2);}
+.role-operator{background:#EBF5FB;color:var(--blue);}
 
-/* P13 订阅 */
+/* ===== Subscription Page ===== */
 .sub-switch{width:44px;height:26px;background:var(--accent);border-radius:13px;position:relative;cursor:pointer;}
 .sub-switch::after{content:"";position:absolute;top:2px;right:2px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.2s;}
 
-/* Toast */
-.toast{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:100;animation:toastIn .3s;}
+/* ===== Toast ===== */
+.toast{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(45,52,54,.82);color:#fff;padding:10px 22px;border-radius:22px;font-size:13px;z-index:100;animation:toastIn .3s;backdrop-filter:blur(8px);}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,10px);}to{opacity:1;transform:translate(-50%,0);}}
 
-/* SVG 通用 */
+/* SVG */
 svg{display:block;}
 
-/* 隐藏滚动条美化 */
 .content{scrollbar-width:none;}
+
+/* Right Panel */
+.desc-panel{padding:24px 20px;}
+.dp-level{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;}
+.dp-module{font-size:12px;color:var(--text-secondary);}
+.dp-title{font-size:20px;font-weight:700;color:var(--primary);margin-bottom:4px;line-height:1.3;}
+.dp-hr{height:2px;background:var(--accent);width:40px;margin:12px 0 16px;border-radius:1px;}
+.dp-section{margin-bottom:16px;}
+.dp-label{font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px;}
+.dp-text{font-size:13px;color:var(--text);line-height:1.6;}
+.dp-list{font-size:13px;color:var(--text);line-height:1.8;list-style:none;}
+.dp-list li{padding-left:14px;position:relative;}
+.dp-list li::before{content:"\2022";color:var(--accent);position:absolute;left:0;font-weight:700;}
+.dp-diff{background:#F8F6F1;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:8px;padding:12px;font-size:12px;line-height:1.6;}
+.dp-diff strong{color:var(--red);}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar-left">
-    <div class="logo">NutriSmart App Demo<small>智能调奶器 · 交互原型 · 14 页</small></div>
+    <div class="logo">NutriSmart Demo <small>Formula Maker \u00b7 Interactive Prototype \u00b7 Western UI</small></div>
     <nav class="tree" id="tree"></nav>
   </aside>
   <main class="stage">
@@ -218,10 +258,15 @@ svg{display:block;}
 </div>
 
 <script>
-// ===== 配色常量 =====
-const C = {primary:'#1A3A5C',accent:'#E87A2E',bg:'#F5F5F5',text:'#333',white:'#fff',green:'#2E8B57',red:'#C0392B',blue2:'#3A5A7C',lightblue:'#CCDDEE',gray:'#999',line:'#E5E5E5'};
+// ===== Color Constants =====
+const C = {
+  primary:'#2D3436', accent:'#8B6914', accentLight:'#C4A35A',
+  bg:'#FDF8F3', text:'#2D3436', white:'#FFF',
+  green:'#27AE60', red:'#E74C3C', orange:'#E67E22',
+  blue:'#2980B9', textSecondary:'#636E72', line:'#E8E2DA'
+};
 
-// ===== 状态栏 =====
+// ===== Status Bar =====
 function statusBar(){
   return `<div class="status-bar">
     <span>9:41</span>
@@ -233,33 +278,11 @@ function statusBar(){
   </div>`;
 }
 
-// ===== 导航栏 =====
+// ===== Nav Bar =====
 function navBar(title, opts={}){
-  const back = opts.back ? `<div class="nav-back" onclick="history.back()">‹</div>` : '<div style="width:30px"></div>';
-  const right = opts.right ? `<div class="nav-right">${opts.right}</div>` : '<div style="width:30px"></div>';
+  const back = opts.back ? `<div class="nav-back" data-goto="${opts.backTarget||'p0'}">\u2039</div>` : '<div style="width:36px"></div>';
+  const right = opts.right ? `<div class="nav-right">${opts.right}</div>` : '<div style="width:36px"></div>';
   return `<div class="nav-bar">${back}<div class="nav-title">${title}</div>${right}</div>`;
-}
-
-// ===== Tab Bar =====
-function tabBar(active){
-  const tabs = [
-    {id:'home',icon:'⌂',label:'首页',page:'p1'},
-    {id:'record',icon:'☰',label:'记录',page:'p4'},
-    {id:'brew',icon:'+',label:'',mid:true,page:'p2'},
-    {id:'insight',icon:'◐',label:'洞察',page:'p6'},
-    {id:'me',icon:'☺',label:'我的',page:'p14'},
-  ];
-  let h = '<div class="tab-bar">';
-  tabs.forEach(t=>{
-    const cls = active===t.id?'active':'';
-    if(t.mid){
-      h += `<div class="tab tab-mid ${cls}" data-goto="${t.page}"><div class="tab-mid-circle">+</div><span style="margin-top:2px;color:${C.gray}">出奶</span></div>`;
-    } else {
-      h += `<div class="tab ${cls}" data-goto="${t.page}"><span class="tab-icon">${t.icon}</span><span>${t.label}</span></div>`;
-    }
-  });
-  h += '</div>';
-  return h;
 }
 
 // ===== Toast =====
@@ -272,179 +295,257 @@ function showToast(msg){
   t.className = 'toast';
   t.textContent = msg;
   document.getElementById('screen').appendChild(t);
-  toastTimer = setTimeout(()=>t.remove(),2000);
+  toastTimer = setTimeout(()=>t.remove(),2200);
 }
 
-// ===== 环形进度 SVG =====
-function ringSVG(percent, size=64, stroke=6, color=C.accent, bg='#E5E5E5'){
+// ===== Ring SVG =====
+function ringSVG(percent, size=64, stroke=6, color=C.accent, bg='#E8E2D8'){
   const r = (size-stroke)/2;
   const circ = 2*Math.PI*r;
   const off = circ*(1-percent/100);
-  return `<svg width="${size}" height="${size}" class="ring-small">
+  return `<svg width="${size}" height="${size}" style="flex-shrink:0">
     <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${bg}" stroke-width="${stroke}"/>
     <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 ${size/2} ${size/2})"/>
     <text x="50%" y="50%" text-anchor="middle" dy=".35em" font-size="${size*.22}" font-weight="700" fill="${C.primary}">${percent}%</text>
   </svg>`;
 }
 
-// ===== 14 个页面定义 =====
+// ============================================================
+// PAGE DEFINITIONS
+// ============================================================
 const PAGES = {
-  p1:{
-    module:'核心喂养',title:'首页 Dashboard',level:'L1-L3',levelTag:'L1-L3',tagClass:'tag-l3',tab:'home',
+
+  // ----- P0: Device List (Entry Point) -----
+  p0:{
+    module:'Entry',title:'My Devices',level:'Entry',levelTag:'ENTRY',tagClass:'tag-entry',
     desc:{
-      scene:'夜间3AM喂养 / 日常概览',
-      func:'今日喂养概览、快捷出奶入口、库存状态、AI 建议直达，一屏掌握喂养全局',
-      interactions:['一键出奶圆按钮 → P2 出奶流程','库存卡 → P5 库存管理','AI 建议条 → P9 AI 喂养建议','底部 Tab → P4/P6/P14'],
-      diff:'Baby Brezza App 无主页概览，仅远程遥控；本方案以数据洞察驱动决策，AI 建议主动推送而非被动操作'
+      scene:'App launch / Device selection hub',
+      func:'Lists all connected NutriSmart formula maker devices. Tap a device to enter its control dashboard and access all features. Supports multiple devices per household.',
+      interactions:['Tap device card \u2192 Enter device hub (P1)','+ Add Device \u2192 Pairing flow','Device status dot shows online/offline','Quick stats show last brew & accuracy'],
+      diff:'Competitors show a flat feature list on app launch; this design treats the device as the central organizing principle \u2014 all features live inside each device context'
     },
     render:()=>`
-      ${navBar('',{right:'🔔 ⚙️'})}
+      ${navBar('My Devices',{right:'\u2699\uFE0F'})}
       <div class="content" style="background:${C.bg}">
-        <div class="dash-greeting">
-          <div style="font-size:13px;color:${C.gray}">Sarah，下午好 👋</div>
-          <div style="font-size:18px;font-weight:700;color:${C.primary}">Emma 的喂养日</div>
+        <div class="dev-list-header">
+          <h2>My Devices</h2>
+          <p>Tap a device to open its control panel</p>
         </div>
-        <div class="dash-overview">
-          <div style="display:flex;justify-content:space-between;align-items:flex-end">
-            <div><div class="big">32oz</div><div class="sub">今日已喂养 6 次</div></div>
-            <div style="text-align:right"><div style="font-size:12px;color:${C.lightblue}">距下次约</div><div style="font-size:18px;font-weight:600">1h20m</div></div>
-          </div>
-          <div style="height:1px;background:rgba(255,255,255,.15);margin:12px 0"></div>
-          <div style="font-size:12px;color:${C.lightblue}">上瓶 14:30 · 4oz · Similac 1段 · 偏差 +1.2% ✓</div>
-        </div>
-        <div class="dash-fab">
-          <div class="dash-fab-btn" data-goto="p2"><span>+</span>一键出奶</div>
-          <div style="flex:1">
-            <div style="font-size:12px;color:${C.gray};margin-bottom:4px">奶粉库存</div>
-            <div class="card" style="margin:0;padding:10px;display:flex;align-items:center;gap:10px;cursor:pointer" data-goto="p5">
-              ${ringSVG(68,48)}
-              <div style="flex:1">
-                <div style="font-size:13px;font-weight:600;color:${C.primary}">Similac 1段</div>
-                <div style="font-size:11px;color:${C.gray}">余量 68% · 约 5.2 天</div>
-              </div>
-              <div class="btn btn-accent btn-sm">补货</div>
+        <div class="dev-card selected" data-goto="p1">
+          <div class="dev-card-top">
+            <div class="dev-icon">\uD83E\uDDFB</div>
+            <div class="dev-info">
+              <div class="dev-name">NutriSmart Pro</div>
+              <div class="dev-status"><span class="dev-status-dot"></span> Online \u00b7 Living Room</div>
             </div>
           </div>
-        </div>
-        <div style="margin:0 14px;background:linear-gradient(90deg,#FFF3E8,#FFE8D6);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" data-goto="p9">
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="font-size:22px">🤖</div>
-            <div><div style="font-size:12px;font-weight:600;color:${C.accent}">AI 建议贝塔</div><div style="font-size:12px;color:${C.text}">连续3天夜间间隔&lt;2h，建议增加单次容量</div></div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">32 oz</div><div class="dev-stat-label">Today</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">+0.4%</div><div class="dev-stat-label">Avg Accuracy</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">68%</div><div class="dev-stat-label">Powder Left</div></div>
           </div>
-          <div style="color:${C.accent};font-size:18px">›</div>
         </div>
-        <div class="section-title">今日时间线</div>
-        <div class="card" style="margin-top:4px">
-          <div class="dash-timeline-item"><div class="dash-timeline-dot" style="background:${C.green}"></div><span style="font-weight:600">14:30</span><span>4oz · +1.2% ✓</span></div>
-          <div class="dash-timeline-item"><div class="dash-timeline-dot" style="background:${C.green}"></div><span style="font-weight:600">11:00</span><span>5oz · -0.8% ✓</span></div>
-          <div class="dash-timeline-item"><div class="dash-timeline-dot" style="background:${C.accent}"></div><span style="font-weight:600">03:15</span><span>4oz · +2.8% ⚠ 接近阈值</span></div>
-          <div class="dash-timeline-item"><div class="dash-timeline-dot" style="background:${C.green}"></div><span style="font-weight:600">00:30</span><span>3oz · +0.5% ✓</span></div>
+        <div class="dev-card" style="opacity:.5">
+          <div class="dev-card-top">
+            <div class="dev-icon">\uD83E\uDDFB</div>
+            <div class="dev-info">
+              <div class="dev-name">NutriSmart Mini</div>
+              <div class="dev-status" style="color:${C.textSecondary}"><span class="dev-status-dot" style="background:${C.textSecondary}"></span> Offline \u00b7 Nursery</div>
+            </div>
+          </div>
+          <div class="dev-stats">
+            <div class="dev-stat"><div class="dev-stat-val">\u2014</div><div class="dev-stat-label">Today</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">+0.6%</div><div class="dev-stat-label">Avg Accuracy</div></div>
+            <div class="dev-stat"><div class="dev-stat-val">42%</div><div class="dev-stat-label">Powder Left</div></div>
+          </div>
         </div>
-        <div style="height:14px"></div>
+        <div class="add-device-btn" data-action="addDev">
+          <span style="font-size:20px">+</span> Add New Device
+        </div>
+        <div style="height:20px"></div>
       </div>
     `
   },
 
-  p2:{
-    module:'核心喂养',title:'一键出奶',level:'L1-L2',levelTag:'L2',tagClass:'tag-l2',tab:'',
+  // ----- P1: Device Dashboard (Reference Layout) -----
+  p1:{
+    module:'Core Feeding',title:'Device Control',level:'L1-L2',levelTag:'L1-L2',tagClass:'tag-l2',
     desc:{
-      scene:'夜间3AM喂养',
-      func:'选预设→确认→出奶动画（含称重校准可视化）→完成记录，全程称重式校准+实时偏差显示',
-      interactions:['选预设卡 → 高亮选中','开始出奶 → 出奶动画阶段','出奶中实时显示称重克数与偏差','完成 → 返回首页'],
-      diff:'Baby Brezza 容积式无校准反馈，用户不知偏差多少；本方案出奶全程可视化称重校准，偏差 >±3% 自动停机告警'
+      scene:'Night 3AM feed / Quick daily use',
+      func:'Main control page for the selected device. Shows real-time device status with floating powder/water readouts, Milk/Water mode toggle, formula brand selector, volume stepper, temperature control, and one-tap Start button. Reference layout from leading海外竞品.',
+      interactions:['Milk/Water toggle \u2192 Switch dispensing mode','Brand card \u2192 P3 Scan/Select Formula','Volume +/- stepper \u2192 Adjust amount','Start button \u2192 P2 Brew Flow (with animation)','Lock icon \u2192 Child lock toggle','Settings icon \u2192 Settings page'],
+      diff:'Baby Brezza uses a basic remote with no real-time sensor data visible. This layout puts device telemetry front-and-center \u2014 users see exact powder weight (184g) and water volume (202ml) before brewing, building trust in accuracy.'
     },
     render:()=>`
-      ${navBar('一键出奶',{back:1})}
-      <div class="content" id="brewContent" style="background:${C.bg}">
-        <div class="brew-step">① 选择预设</div>
-        <div class="brew-preset">
-          <div class="brew-preset-card sel"><div class="oz">4oz</div><div style="font-size:11px;color:${C.gray};margin-top:4px">98°F · 1段</div></div>
-          <div class="brew-preset-card"><div class="oz">6oz</div><div style="font-size:11px;color:${C.gray};margin-top:4px">98°F · 1段</div></div>
-          <div class="brew-preset-card"><div class="oz" style="font-size:16px">自定义</div><div style="font-size:11px;color:${C.gray};margin-top:4px">自选参数</div></div>
+      ${navBar('NutriSmart Pro',{back:1,backTarget:'p0',right:'<span>\u2699\uFE0F</span>'})}
+      <div class="content" style="background:${C.bg}">
+        <div class="ddash-top">
+          <div class="ddash-icon-btn">\u2039</div>
+          <div class="ddash-icon-btn" style="font-size:15px">\u2699\uFE0F</div>
         </div>
-        <div class="brew-step">② 确认参数</div>
+
+        <!-- Device Image + Float Stats -->
+        <div class="ddash-device-area">
+          <div class="ddash-lock" data-action="lock">\uD83D\uDD12</div>
+          <div class="ddash-device-img">
+            \uD83E\uDDFB
+            <div class="ddash-float-stat left">\uD83D\uDCC4 <strong>184g</strong></div>
+            <div class="ddash-float-stat right">\uD83D\uDCA7 <strong>202ml</strong></div>
+          </div>
+        </div>
+
+        <!-- Milk / Water Toggle -->
+        <div class="ddash-toggle">
+          <div class="ddash-toggle-item active">Milk</div>
+          <div class="ddash-toggle-item">Water</div>
+        </div>
+
+        <!-- Brand Selection -->
+        <div class="ddash-brand-card" data-goto="p3">
+          <div class="ddash-brand-info">
+            <div class="ddash-brand-name">Kabrita</div>
+            <div class="ddash-brand-detail">1 scoop (8.8 g) per 2 oz of water</div>
+          </div>
+          <span style="font-size:18px;color:${C.textSecondary}">\u203A</span>
+        </div>
+
+        <!-- Volume Stepper -->
+        <div class="ddash-stepper-card">
+          <div class="ddash-stepper-label"><span>\u263A\uFE0F</span> Water for Formula</div>
+          <div class="ddash-stepper">
+            <button class="ddash-stepper-btn" data-action="volDown">\u2212</button>
+            <div class="ddash-stepper-val">120 ml</div>
+            <button class="ddash-stepper-btn" data-action="volUp">+</button>
+          </div>
+          <div class="ddash-hint">Mix with 17.6g powder (1 scoop / 60ml)</div>
+        </div>
+
+        <!-- Temperature -->
+        <div class="ddash-temp-row">
+          <div class="ddash-temp-label"><span>\uD83C\uDF21\uFE0F</span> Water Temp</div>
+          <span style="font-size:15px;font-weight:600;color:${C.primary}">104 \u00b0F <span style="font-size:12px;color:${C.textSecondary};font-weight:400">(40\u00b0C)</span></span>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="ddash-bottom-bar">
+          <div class="ddash-power-btn" data-action="power">\uD83D\uDD0B</div>
+          <div class="ddash-start-btn" data-goto="p2">
+            <span>\u25B6</span> Start
+          </div>
+        </div>
+        <div style="height:10px"></div>
+      </div>
+    `
+  },
+
+  // ----- P2: Brew Flow -----
+  p2:{
+    module:'Core Feeding',title:'Brew',level:'L1-L2',levelTag:'L2',tagClass:'tag-l2',
+    desc:{
+      scene:'Night 3AM feed',
+      func:'Select preset \u2192 Confirm parameters \u2192 Brewing animation with real-time weighing calibration visualization \u2192 Complete & auto-log. Full weigh-based calibration with live deviation display.',
+      interactions:['Select preset card \u2192 Highlight selected','Start brew \u2192 Animation phase with ring progress','During brew: live weight grams & deviation % shown','Complete \u2192 Return to device dashboard'],
+      diff:'Baby Brezza volume-based with no calibration feedback \u2014 user has no idea how far off they are. Our approach visualizes the entire weighing process; deviations >\u00b13% trigger auto-stop + alert.'
+    },
+    render:()=>`
+      ${navBar('Make Bottle',{back:1,backTarget:'p1'})}
+      <div class="content" id="brewContent" style="background:${C.bg}">
+        <div class="brew-step">Step 1: Select Size</div>
+        <div class="brew-preset">
+          <div class="brew-preset-card sel"><div class="oz">4 oz</div><div style="font-size:11px;color:${C.textSecondary};margin-top:4px">104\u00b0F \u00b7 Stage 1</div></div>
+          <div class="brew-preset-card"><div class="oz">6 oz</div><div style="font-size:11px;color:${C.textSecondary};margin-top:4px">104\u00b0F \u00b7 Stage 1</div></div>
+          <div class="brew-preset-card"><div class="oz" style="font-size:16px">Custom</div><div style="font-size:11px;color:${C.textSecondary};margin-top:4px">Your settings</div></div>
+        </div>
+        <div class="brew-step">Step 2: Confirm</div>
         <div class="card">
-          <div class="brew-param"><span>容量</span><span style="font-weight:600">4.0 oz</span></div>
-          <div class="brew-param"><span>温度</span><span style="font-weight:600">98°F</span></div>
-          <div class="brew-param"><span>奶粉</span><span style="font-weight:600">Similac 1段</span></div>
-          <div class="brew-param" style="border:none"><span>称重校准</span><span style="font-weight:600;color:${C.green}">✓ 已启用</span></div>
+          <div class="brew-param"><span>Volume</span><span style="font-weight:600">4.0 oz</span></div>
+          <div class="brew-param"><span>Temperature</span><span style="font-weight:600">104\u00b0F</span></div>
+          <div class="brew-param"><span>Formula</span><span style="font-weight:600">Kabrita Goat</span></div>
+          <div class="brew-param" style="border:none"><span>Weigh Calibration</span><span style="font-weight:600;color:${C.green}">\u2713 Active</span></div>
         </div>
         <div class="brew-confirm">
-          <div class="btn btn-accent btn-block" style="padding:14px;font-size:16px" id="brewStart">开始出奶</div>
+          <div class="btn btn-accent btn-block" style="padding:14px;font-size:16px" id="brewStart">Start Brewing</div>
         </div>
       </div>
     `
   },
 
+  // ----- P3: Scan / Select Formula -----
   p3:{
-    module:'核心喂养',title:'扫码识别奶粉',level:'L2',levelTag:'L2',tagClass:'tag-l2',tab:'',
+    module:'Core Feeding',title:'Select Formula',level:'L2',levelTag:'L2',tagClass:'tag-l2',
     desc:{
-      scene:'奶粉品牌/阶段切换',
-      func:'扫描奶粉罐条码，云端品牌库自动匹配配比参数；未收录品牌支持拍照图像识别',
-      interactions:['扫描框 → 点击模拟识别成功','识别结果卡 → 查看品牌库匹配','确认使用 → 返回首页','拍照识别 → 弹出流程说明'],
-      diff:'Baby Brezza 需致电客服查条码设置号，Similac Advance 在官网下拉菜单找不到；本方案扫码即识别，云端 Top50 品牌库覆盖'
+      scene:'Switching formula brand/stage',
+      func:'Scan formula can barcode to auto-match brand parameters from cloud database. Unlisted brands support photo OCR recognition.',
+      interactions:['Scan frame tap \u2192 Simulate successful scan','Result card \u2192 View brand match details','Confirm \u2192 Return to device dashboard','Photo fallback \u2192 Flow explanation toast'],
+      diff:'Baby Brezza requires calling support to look up setting numbers; Similac Advance not findable in their website dropdown. We offer scan-to-identify with cloud database covering top 50 brands.'
     },
     render:()=>`
-      ${navBar('添加奶粉',{back:1})}
+      ${navBar('Add Formula',{back:1,backTarget:'p1'})}
       <div class="scan-area" id="scanArea">
         <div class="scan-frame" id="scanFrame" style="cursor:pointer">
           <div class="scan-line"></div>
         </div>
-        <div class="scan-hint">对准奶粉罐底部条码</div>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.3);font-size:40px;z-index:1">📦</div>
+        <div class="scan-hint">Point at barcode on bottom of can</div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.25);font-size:40px;z-index:1">\uD83D\uDCE6</div>
       </div>
-      <div class="scan-bottom" id="scanBottom" data-action="photo">品牌未收录？拍照识别 ›</div>
+      <div class="scan-bottom" id="scanBottom" data-action="photo">Brand not found? Photo Identify \u203A</div>
     `
   },
 
+  // ----- P4: Feeding Log -----
   p4:{
-    module:'核心喂养',title:'喂养记录',level:'L3',levelTag:'L3',tagClass:'tag-l3',tab:'record',
+    module:'Data Insights',title:'Feeding Log',level:'L3',levelTag:'L3',tagClass:'tag-l3',
     desc:{
-      scene:'数据洞察',
-      func:'时间线列表按日分组，自动记录每次出奶的时间/容量/品牌/偏差，异常标记+可查自检报告',
-      interactions:['筛选漏斗 → 今日/7天/30天切换','异常条目(⚠/🔴) → P7 偏差自检报告','单条点击 → 详情弹层'],
-      diff:'全市场无品牌自动记录喂养数据，用户需另装 Huckleberry 等第三方 App；本方案机器出奶即记录，零手动'
+      scene:'Data review / Track patterns',
+      func:'Timeline list grouped by day. Auto-logs every brew with time/volume/brand/deviation. Anomaly flagged with link to full accuracy report.',
+      interactions:['Filter tabs \u2192 Today / 7 days / 30 days','Anomaly items (\u26A0\uFE0F/\uD83D\uDD34) \u2192 P7 Accuracy Report','Single item tap \u2192 Detail view'],
+      diff:'No competitor brand auto-logs feeding data. Parents install separate apps like Huckleberry. Our machine logs every brew automatically \u2014 zero manual entry.'
     },
     render:()=>`
-      ${navBar('喂养记录',{right:'⌕'})}
+      ${navBar('Feeding Log',{back:1,backTarget:'p1',right:'\uD83D\uDD0D'})
+}
       <div class="content" style="background:${C.bg}">
         <div style="display:flex;gap:8px;padding:10px 14px">
-          <div class="btn btn-primary btn-sm" style="opacity:1">今日</div>
-          <div class="btn btn-sm" style="background:#EBEBEB;color:${C.gray}">7天</div>
-          <div class="btn btn-sm" style="background:#EBEBEB;color:${C.gray}">30天</div>
+          <div class="btn btn-primary btn-sm">Today</div>
+          <div class="btn btn-sm" style="background:#EEE9E0;color:${C.textSecondary}">7 Days</div>
+          <div class="btn btn-sm" style="background:#EEE9E0;color:${C.textSecondary}">30 Days</div>
         </div>
-        <div class="rec-day">今日 · 6月26日</div>
-        <div class="rec-item" data-goto="p7"><span class="rec-time">14:30</span><span class="rec-amount">4oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev" style="color:${C.green}">+1.2% ✓</span></div>
-        <div class="rec-item" data-goto="p7"><span class="rec-time">11:00</span><span class="rec-amount">5oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev" style="color:${C.green}">-0.8% ✓</span></div>
-        <div class="rec-item" data-goto="p7"><span class="rec-time">03:15</span><span class="rec-amount">4oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev"><span class="rec-badge" style="background:#FFF3E8;color:${C.accent}">+2.8% ⚠</span></span></div>
-        <div class="rec-item" data-goto="p7"><span class="rec-time">00:30</span><span class="rec-amount">3oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev" style="color:${C.green}">+0.5% ✓</span></div>
-        <div class="rec-day">昨日 · 6月25日</div>
-        <div class="rec-item"><span class="rec-time">22:00</span><span class="rec-amount">5oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev" style="color:${C.green}">+1.0% ✓</span></div>
-        <div class="rec-item"><span class="rec-time">18:30</span><span class="rec-amount">4oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev" style="color:${C.green}">-0.3% ✓</span></div>
-        <div class="rec-item"><span class="rec-time">15:00</span><span class="rec-amount">5oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev" style="color:${C.green}">+0.8% ✓</span></div>
-        <div class="rec-item"><span class="rec-time">11:00</span><span class="rec-amount">4oz</span><span style="font-size:11px;color:${C.gray}">Similac 1段</span><span class="rec-dev" style="color:${C.green}">+1.5% ✓</span></div>
+        <div class="rec-day">Today \u00b7 Jun 26</div>
+        <div class="rec-item" data-goto="p7"><span class="rec-time">14:30</span><span class="rec-amount">4oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev" style="color:${C.green}">+1.2% \u2713</span></div>
+        <div class="rec-item" data-goto="p7"><span class="rec-time">11:00</span><span class="rec-amount">5oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev" style="color:${C.green}">-0.8% \u2713</span></div>
+        <div class="rec-item" data-goto="p7"><span class="rec-time">03:15</span><span class="rec-amount">4oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev"><span class="rec-badge" style="background:#FEF5E7;color:${C.orange}">+2.8% \u26A0\uFE0F</span></span></div>
+        <div class="rec-item" data-goto="p7"><span class="rec-time">00:30</span><span class="rec-amount">3oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev" style="color:${C.green}">+0.5% \u2713</span></div>
+        <div class="rec-day">Yesterday \u00b7 Jun 25</div>
+        <div class="rec-item"><span class="rec-time">22:00</span><span class="rec-amount">5oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev" style="color:${C.green}">+1.0% \u2713</span></div>
+        <div class="rec-item"><span class="rec-time">18:30</span><span class="rec-amount">4oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev" style="color:${C.green}">-0.3% \u2713</span></div>
+        <div class="rec-item"><span class="rec-time">15:00</span><span class="rec-amount">5oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev" style="color:${C.green}">+0.8% \u2713</span></div>
+        <div class="rec-item"><span class="rec-time">11:00</span><span class="rec-amount">4oz</span><span class="rec-dev">Kabrita Stage 1</span><span class="rec-dev" style="color:${C.green}">+1.5% \u2713</span></div>
         <div style="height:14px"></div>
       </div>
     `
   },
 
+  // ----- P5: Inventory -----
   p5:{
-    module:'核心喂养',title:'智能库存管理',level:'L3',levelTag:'L3',tagClass:'tag-l3',tab:'',
+    module:'Data Insights',title:'Formula Stock',level:'L3',levelTag:'L3',tagClass:'tag-l3',
     desc:{
-      scene:'数据洞察',
-      func:'称重传感器推算奶粉余量，低于阈值推送补货提醒，支持一键下单与自动订阅',
-      interactions:['一键下单 → 弹出下单确认','开启自动订阅 → P13 订阅制管理','余量环 → 实时显示剩余百分比与预计天数'],
-      diff:'Tommee Tippee 家长明确要求 App 滤芯/库存提醒但未实现；本方案基于称重传感器精准推算余量+智能补货'
-    },
-    render:()=>`
-      ${navBar('奶粉库存',{back:1})}
+      scene:'Stock management / Auto-replenishment',
+      function:'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.',
+      interactions:['One-tap order \u2192 Order confirmation toast','Auto-subscribe \u2192 P13 Subscription Management','Ring indicator \u2192 Live remaining % and estimated days'],
+      diff:'Tommee Tippee parents explicitly request app stock alerts but it was never built. We deliver precise stock estimation via weighing sensor + smart reordering.'
+    }.func || 'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.',
+    desc:{...PAGES.p5.desc, func:PAGES.p5.desc?.func || 'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.'},
+    render:()=>{
+      PAGES.p5.desc.func = PPages.p5.desc?.func || 'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.';
+      return `
+      ${navBar('Formula Stock',{back:1,backTarget:'p1'})}
       <div class="content" style="background:${C.bg}">
         <div class="card" style="text-align:center">
           <div style="display:flex;justify-content:center;margin-bottom:12px">${ringSVG(68,100,8)}</div>
-          <div style="font-size:16px;font-weight:700;color:${C.primary}">Similac Advance 1段</div>
-          <div style="font-size:13px;color:${C.gray};margin-top:4px">余量 68% · 约 5.2 天 / 21oz</div>
+          <div style="font-size:16px;font-weight:700;color:${C.primary}">Kabrita Goat Stage 1</div>
+          <div style="font-size:13px;color:${C.textSecondary};margin-top:4px">68% left \u00b7 ~5.2 days / 21oz</div>
         </div>
-        <div class="section-title">7 日消耗趋势</div>
+        <div class="section-title">7-Day Usage Trend</div>
         <div class="card">
           <div class="inv-bar">
             <div class="inv-bar-col" style="height:60%"></div>
@@ -455,56 +556,113 @@ const PAGES = {
             <div class="inv-bar-col" style="height:80%"></div>
             <div class="inv-bar-col" style="height:55%;background:${C.accent};opacity:1"></div>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:9px;color:${C.gray};margin-top:4px">
-            <span>20日</span><span>21日</span><span>22日</span><span>23日</span><span>24日</span><span>25日</span><span>26日</span>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:${C.textSecondary};margin-top:4px">
+            <span>Jun 20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
           </div>
-          <div style="font-size:11px;color:${C.gray};text-align:center;margin-top:8px">日均消耗 4.6oz</div>
+          <div style="font-size:11px;color:${C.textSecondary};text-align:center;margin-top:8px">Daily avg 4.6oz</div>
         </div>
-        <div style="margin:12px 14px;background:#FFF3E8;border:1px solid #F5D9C0;border-radius:12px;padding:14px;display:flex;align-items:center;gap:10px">
-          <span style="font-size:20px">⚠️</span>
-          <div style="flex:1;font-size:13px;color:${C.text}">预计 <strong>7月1日</strong> 用尽，建议提前补货</div>
+        <div style="margin:12px 14px;background:#FEF5E7;border:1px solid #FCEBBF;border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:20px">\u26A0\uFE0F</span>
+          <div style="flex:1;font-size:13px;color:${C.text}">Expected empty <strong>Jul 1</strong>. Restock recommended.</div>
         </div>
         <div style="display:flex;gap:10px;padding:0 14px">
-          <div class="btn btn-accent" style="flex:1" data-action="order">一键下单</div>
-          <div class="btn btn-outline" style="flex:1" data-goto="p13">自动订阅</div>
+          <div class="btn btn-accent" style="flex:1" data-action="order">Order Now</div>
+          <div class="btn btn-outline" style="flex:1" data-goto="p13">Subscribe</div>
         </div>
-        <div class="section-title">补货记录</div>
+        <div class="section-title">Restock History</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Similac 1段 · 1罐</div><div style="font-size:11px;color:${C.gray}">6月18日 · 已签收</div></div><div style="color:${C.green};font-size:12px">✓</div></div>
-          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Similac 1段 · 1罐</div><div style="font-size:11px;color:${C.gray}">5月20日 · 已签收</div></div><div style="color:${C.green};font-size:12px">✓</div></div>
-          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Similac 1段 · 2罐</div><div style="font-size:11px;color:${C.gray}">4月15日 · 已签收</div></div><div style="color:${C.green};font-size:12px">✓</div></div>
+          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">Jun 18 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">May 20 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 2 Cans</div><div style="font-size:11px;color:${C.textSecondary}">Apr 15 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
         </div>
         <div style="height:14px"></div>
       </div>
-    `
+    `}
   },
 
+  // Fix: properly define p5 render
+  p5:(()=>{
+    const baseRender = ()=>{
+      return `
+      ${navBar('Formula Stock',{back:1,backTarget:'p1'})}
+      <div class="content" style="background:${C.bg}">
+        <div class="card" style="text-align:center">
+          <div style="display:flex;justify-content:center;margin-bottom:12px">${ringSVG(68,100,8)}</div>
+          <div style="font-size:16px;font-weight:700;color:${C.primary}">Kabrita Goat Stage 1</div>
+          <div style="font-size:13px;color:${C.textSecondary};margin-top:4px">68% left \u00b7 ~5.2 days / 21oz</div>
+        </div>
+        <div class="section-title">7-Day Usage Trend</div>
+        <div class="card">
+          <div class="inv-bar">
+            <div class="inv-bar-col" style="height:60%"></div>
+            <div class="inv-bar-col" style="height:75%"></div>
+            <div class="inv-bar-col" style="height:50%"></div>
+            <div class="inv-bar-col" style="height:65%"></div>
+            <div class="inv-bar-col" style="height:70%"></div>
+            <div class="inv-bar-col" style="height:80%"></div>
+            <div class="inv-bar-col" style="height:55%;background:${C.accent};opacity:1"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:${C.textSecondary};margin-top:4px">
+            <span>Jun 20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
+          </div>
+          <div style="font-size:11px;color:${C.textSecondary};text-align:center;margin-top:8px">Daily avg 4.6oz</div>
+        </div>
+        <div style="margin:12px 14px;background:#FEF5E7;border:1px solid #FCEBBF;border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:20px">\u26A0\uFE0F</span>
+          <div style="flex:1;font-size:13px;color:${C.text}">Expected empty <strong>Jul 1</strong>. Restock recommended.</div>
+        </div>
+        <div style="display:flex;gap:10px;padding:0 14px">
+          <div class="btn btn-accent" style="flex:1" data-action="order">Order Now</div>
+          <div class="btn btn-outline" style="flex:1" data-goto="p13">Subscribe</div>
+        </div>
+        <div class="section-title">Restock History</div>
+        <div class="card" style="padding:0">
+          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">Jun 18 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">May 20 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+          <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 2 Cans</div><div style="font-size:11px;color:${C.textSecondary}">Apr 15 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+        </div>
+        <div style="height:14px"></div>
+      </div>
+    `};
+    return {
+      module:'Data Insights',title:'Formula Stock',level:'L3',levelTag:'L3',tagClass:'tag-l3',
+      desc:{
+        scene:'Stock management / Auto-replenishment',
+        func:'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.',
+        interactions:['One-tap order \u2192 Order confirmation toast','Auto-subscribe \u2192 P13 Subscription Management','Ring indicator \u2192 Live remaining % and estimated days'],
+        diff:'Tommee Tippee parents explicitly request app stock alerts but it was never built. We deliver precise stock estimation via weighing sensor + smart reordering.'
+      },
+      render:baseRender
+    };
+  })(),
+
+  // ----- P6: Growth Charts -----
   p6:{
-    module:'数据洞察',title:'生长曲线',level:'L3',levelTag:'L3',tagClass:'tag-l3',tab:'insight',
+    module:'Data Insights',title:'Growth Charts',level:'L3',levelTag:'L3',tagClass:'tag-l3',
     desc:{
-      scene:'数据洞察',
-      func:'WHO 标准生长曲线 + 宝宝数据点连线 + 喂养趋势关联，直观展示生长是否符合预期',
-      interactions:['体重/身高/头围切换 → 更新曲线','+ 录入新数据 → 弹出录入表单','数据点 → 查看详情'],
-      diff:'全市场无品牌提供生长曲线；用户需另装 App 手动维护；本方案自动关联喂养数据，体重增长与摄入量一目了然'
+      scene:'Pediatric check-up prep / Track development',
+      func:'WHO standard growth curves + baby data points + feeding trend correlation. Visualize whether growth is on track.',
+      interactions:['Weight/Height/Head tab switch \u2192 Update curve','+ Add Data \u2192 Entry form toast','Data point tap \u2192 Details'],
+      diff:'No competitor offers integrated growth charts. Parents maintain separate apps. We auto-correlate feeding intake with weight gain \u2014 everything in one place.'
     },
     render:()=>`
-      ${navBar('生长曲线')}
+      ${navBar('Growth Charts',{back:1,backTarget:'p1'})}
       <div class="content" style="background:${C.bg}">
         <div class="growth-seg" style="margin-top:10px">
-          <div class="growth-seg-item sel">体重</div>
-          <div class="growth-seg-item">身高</div>
-          <div class="growth-seg-item">头围</div>
+          <div class="growth-seg-item sel">Weight</div>
+          <div class="growth-seg-item">Height</div>
+          <div class="growth-seg-item">Head Circ.</div>
         </div>
         <div class="card">
           <svg width="100%" height="180" viewBox="0 0 320 180">
-            <line x1="30" y1="20" x2="310" y2="20" stroke="#F0F0F0" stroke-width="1"/>
-            <line x1="30" y1="60" x2="310" y2="60" stroke="#F0F0F0" stroke-width="1"/>
-            <line x1="30" y1="100" x2="310" y2="100" stroke="#F0F0F0" stroke-width="1"/>
-            <line x1="30" y1="140" x2="310" y2="140" stroke="#F0F0F0" stroke-width="1"/>
-            <text x="5" y="24" font-size="8" fill="#999">8kg</text>
-            <text x="5" y="64" font-size="8" fill="#999">6kg</text>
-            <text x="5" y="104" font-size="8" fill="#999">4kg</text>
-            <text x="5" y="144" font-size="8" fill="#999">2kg</text>
+            <line x1="30" y1="20" x2="310" y2="20" stroke="#E8E2D8" stroke-width="1"/>
+            <line x1="30" y1="60" x2="310" y2="60" stroke="#E8E2D8" stroke-width="1"/>
+            <line x1="30" y1="100" x2="310" y2="100" stroke="#E8E2D8" stroke-width="1"/>
+            <line x1="30" y1="140" x2="310" y2="140" stroke="#E8E2D8" stroke-width="1"/>
+            <text x="5" y="24" font-size="8" fill="${C.textSecondary}">8kg</text>
+            <text x="5" y="64" font-size="8" fill="${C.textSecondary}">6kg</text>
+            <text x="5" y="104" font-size="8" fill="${C.textSecondary}">4kg</text>
+            <text x="5" y="144" font-size="8" fill="${C.textSecondary}">2kg</text>
             <path d="M30,110 Q90,95 150,80 T310,50" fill="none" stroke="#D5D5D5" stroke-width="1.5" stroke-dasharray="3,2"/>
             <path d="M30,130 Q90,115 150,100 T310,70" fill="none" stroke="#E0E0E0" stroke-width="1.5"/>
             <path d="M30,90 Q90,72 150,58 T310,28" fill="none" stroke="#D5D5D5" stroke-width="1.5" stroke-dasharray="3,2"/>
@@ -517,59 +675,61 @@ const PAGES = {
             <circle cx="230" cy="70" r="3" fill="${C.accent}"/>
             <circle cx="280" cy="60" r="5" fill="${C.accent}" stroke="#fff" stroke-width="2"/>
             <text x="284" y="56" font-size="8" fill="${C.primary}" font-weight="700">6.2kg</text>
-            <text x="30" y="175" font-size="8" fill="#999">出生</text>
-            <text x="80" y="175" font-size="8" fill="#999">1月</text>
-            <text x="130" y="175" font-size="8" fill="#999">2月</text>
-            <text x="180" y="175" font-size="8" fill="#999">3月</text>
-            <text x="225" y="175" font-size="8" fill="#999" font-weight="700">4月</text>
-            <text x="275" y="175" font-size="8" fill="#999">5月</text>
+            <text x="30" y="175" font-size="8" fill="${C.textSecondary}">Birth</text>
+            <text x="80" y="175" font-size="8" fill="${C.textSecondary}">1mo</text>
+            <text x="130" y="175" font-size="8" fill="${C.textSecondary}">2mo</text>
+            <text x="180" y="175" font-size="8" fill="${C.textSecondary}">3mo</text>
+            <text x="225" y="175" font-size="8" fill="${C.primary}" font-weight="700">4mo</text>
+            <text x="275" y="175" font-size="8" fill="${C.textSecondary}">5mo</text>
           </svg>
           <div style="display:flex;gap:12px;justify-content:center;margin-top:8px">
-            <span style="font-size:10px;color:${C.gray}"><span style="color:${C.accent}">●</span> 宝宝数据</span>
-            <span style="font-size:10px;color:${C.gray}"><span style="color:#D5D5D5">┄</span> WHO 百分位</span>
+            <span style="font-size:10px;color:${C.textSecondary}"><span style="color:${C.accent}">\u25CF</span> Baby Data</span>
+            <span style="font-size:10px;color:${C.textSecondary}"><span style="color:#D5D5D5">\u2504\u2504\u2504</span> WHO Percentile</span>
           </div>
         </div>
         <div class="card" style="display:flex;justify-content:space-around;text-align:center">
-          <div><div style="font-size:11px;color:${C.gray}">月龄</div><div style="font-size:20px;font-weight:700;color:${C.primary}">4</div></div>
-          <div><div style="font-size:11px;color:${C.gray}">体重</div><div style="font-size:20px;font-weight:700;color:${C.primary}">6.2kg</div><div style="font-size:10px;color:${C.green}">≈50th</div></div>
-          <div><div style="font-size:11px;color:${C.gray}">身高</div><div style="font-size:20px;font-weight:700;color:${C.primary}">63cm</div><div style="font-size:10px;color:${C.green}">≈55th</div></div>
+          <div><div style="font-size:11px;color:${C.textSecondary}">Age</div><div style="font-size:20px;font-weight:700;color:${C.primary}">4mo</div></div>
+          <div><div style="font-size:11px;color:${C.textSecondary}">Weight</div><div style="font-size:20px;font-weight:700;color:${C.primary}">6.2kg</div><div style="font-size:10px;color:${C.green}">\u224850th</div></div>
+          <div><div style="font-size:11px;color:${C.textSecondary}">Height</div><div style="font-size:20px;font-weight:700;color:${C.primary}">63cm</div><div style="font-size:10px;color:${C.green}">\u224855th</div></div>
         </div>
-        <div class="card-accent card" style="display:flex;align-items:center;gap:10px">
-          <span style="font-size:18px">📈</span>
-          <div style="font-size:12px;color:${C.text}">近30天日均摄入 28oz ↑ · <strong style="color:${C.green}">体重增长符合预期</strong></div>
+        <div class="card-flat card" style="display:flex;align-items:center;gap:10px;margin:10px 14px;">
+          <span style="font-size:18px">\uD83D\uDCCA</span>
+          <div style="font-size:12px;color:${C.text}">Last 30d avg intake 28oz \u2191 \u00b7 <strong style="color:${C.green}">Growth on track</strong></div>
         </div>
         <div style="padding:0 14px;margin-top:4px">
-          <div class="btn btn-outline btn-block" data-action="growth">+ 录入新数据</div>
+          <div class="btn btn-outline btn-block" data-action="growth">+ Add Measurement</div>
         </div>
         <div style="height:14px"></div>
       </div>
     `
   },
 
+  // ----- P7: Accuracy Report -----
   p7:{
-    module:'数据洞察',title:'偏差自检报告',level:'L2',levelTag:'L2',tagClass:'tag-l2',tab:'',
+    module:'Data Insights',title:'Accuracy Report',level:'L2',levelTag:'L2',tagClass:'tag-l2',
     desc:{
-      scene:'精准焦虑型父母',
-      func:'7/30 天配比精度报告，含平均偏差、最大偏差、合格率，可导出 PDF 给儿科医生',
-      interactions:['7天/30天切换 → 更新数据','导出 PDF → 模拟下载 toast','异常条目 → 查看详情'],
-      diff:'CR 实验室数据 Baby Brezza WiFi 版偏差 -17~-19%；本机平均 +0.4%，第三方实验室验证，App 可导出报告'
+      scene:'Precision-focused parents / Share with pediatrician',
+      func:'7/30-day ratio precision report: average deviation, max deviation, pass rate. Export PDF for pediatrician.',
+      interactions:['7 day / 30 day tab \u2192 Update data','Export PDF \u2192 Download toast','Anomaly item \u2192 View detail','Share \u2192 Copy link toast'],
+      diff:'Consumer Reports lab data: Baby Brezza WiFi偏差 -17~ -19%. Our machine averages +0.4%, third-party lab verified. App exports shareable reports.'
     },
     render:()=>`
-      ${navBar('配比精度报告',{back:1,right:'⋯'})}
+      ${navBar('Accuracy Report',{back:1,backTarget:'p1',right:'\u22EF'})
+}
       <div class="content" style="background:${C.bg}">
         <div style="display:flex;gap:8px;padding:10px 14px">
-          <div class="btn btn-primary btn-sm">7天</div>
-          <div class="btn btn-sm" style="background:#EBEBEB;color:${C.gray}">30天</div>
+          <div class="btn btn-primary btn-sm">7 Days</div>
+          <div class="btn btn-sm" style="background:#EEE9E0;color:${C.textSecondary}">30 Days</div>
         </div>
-        <div class="card card-dark">
+        <div class="card" style="background:${C.primary};color:#fff;">
           <div style="display:flex;justify-content:space-between">
-            <div><div style="font-size:11px;color:${C.lightblue}">总次数</div><div style="font-size:24px;font-weight:700">42</div></div>
-            <div><div style="font-size:11px;color:${C.lightblue}">平均偏差</div><div style="font-size:24px;font-weight:700;color:${C.green}">+0.4%</div></div>
-            <div><div style="font-size:11px;color:${C.lightblue}">最大偏差</div><div style="font-size:24px;font-weight:700;color:${C.accent}">+2.8%</div></div>
-            <div><div style="font-size:11px;color:${C.lightblue}">合格率</div><div style="font-size:24px;font-weight:700;color:${C.green}">97.6%</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Total Brews</div><div style="font-size:24px;font-weight:700">42</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Avg Deviation</div><div style="font-size:24px;font-weight:700;color:${C.green}">+0.4%</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Max Deviation</div><div style="font-size:24px;font-weight:700;color:${C.orange}">+2.8%</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Pass Rate</div><div style="font-size:24px;font-weight:700;color:${C.green}">97.6%</div></div>
           </div>
         </div>
-        <div class="section-title">7 日偏差分布</div>
+        <div class="section-title">7-Day Deviation Distribution</div>
         <div class="card">
           <div class="dev-bar">
             <div class="dev-bar-col" style="height:30%;background:${C.green}"><span class="dev-bar-val">+0.5</span></div>
@@ -578,429 +738,501 @@ const PAGES = {
             <div class="dev-bar-col" style="height:60%;background:${C.green}"><span class="dev-bar-val">+1.5</span></div>
             <div class="dev-bar-col" style="height:40%;background:${C.green}"><span class="dev-bar-val">+0.8</span></div>
             <div class="dev-bar-col" style="height:55%;background:${C.green}"><span class="dev-bar-val">+1.2</span></div>
-            <div class="dev-bar-col" style="height:90%;background:${C.accent}"><span class="dev-bar-val">+2.8⚠</span></div>
+            <div class="dev-bar-col" style="height:90%;background:${C.orange}"><span class="dev-bar-val">+2.8\u26A0\uFE0F</span></div>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:9px;color:${C.gray};margin-top:6px">
-            <span>20日</span><span>21日</span><span>22日</span><span>23日</span><span>24日</span><span>25日</span><span>26日</span>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:${C.textSecondary};margin-top:6px">
+            <span>Jun 20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
           </div>
-          <div style="display:flex;gap:12px;margin-top:10px;font-size:10px;color:${C.gray}">
-            <span><span style="color:${C.green}">■</span> ≤±2.5% 合格</span>
-            <span><span style="color:${C.accent}">■</span> ±2.5~3% 接近阈值</span>
-            <span><span style="color:${C.red}">■</span> >±3% 不合格</span>
+          <div style="display:flex;gap:12px;margin-top:10px;font-size:10px;color:${C.textSecondary}">
+            <span><span style="color:${C.green}">\u25A0</span> \u2264\u00b12.5% Pass</span>
+            <span><span style="color:${C.orange}">\u25A0</span> \u00b12.5~3% Warning</span>
+            <span><span style="color:${C.red}">\u25A0</span> >\u00b13% Fail</span>
           </div>
         </div>
-        <div class="section-title">异常记录</div>
-        <div class="card" style="border-left:3px solid ${C.accent}">
+        <div class="section-title">Anomalies</div>
+        <div class="card" style="border-left:3px solid ${C.orange}">
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <div><div style="font-weight:600;font-size:13px">6月26日 03:15</div><div style="font-size:11px;color:${C.gray}">4oz · Similac 1段</div></div>
-            <div style="text-align:right"><div style="font-size:16px;font-weight:700;color:${C.accent}">+2.8%</div><div style="font-size:10px;color:${C.accent}">接近阈值</div></div>
+            <div><div style="font-weight:600;font-size:13px">Jun 26, 03:15</div><div style="font-size:11px;color:${C.textSecondary}">4oz \u00b7 Kabrita Stage 1</div></div>
+            <div style="text-align:right"><div style="font-size:16px;font-weight:700;color:${C.orange}">+2.8%</div><div style="font-size:10px;color:${C.orange}">Near threshold</div></div>
           </div>
         </div>
-        <div style="margin:12px 14px;background:linear-gradient(135deg,#FFF3E8,#FFE8D6);border-radius:12px;padding:14px">
-          <div style="font-size:12px;font-weight:700;color:${C.accent};margin-bottom:8px">⚡ 竞品对比</div>
+        <div style="margin:12px 14px;background:linear-gradient(135deg,#FEF5E7,#FDEBD0);border-radius:var(--radius-sm);padding:14px">
+          <div style="font-size:12px;font-weight:700;color:${C.accent};margin-bottom:8px}\u26A1\uFE0F Competitor Comparison</div>
           <div style="font-size:12px;color:${C.text};line-height:1.6">
             <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)">
-              <span>Baby Brezza WiFi 版</span><span style="color:${C.red};font-weight:600">偏差 -17~-19%</span>
+              <span>Baby Brezza WiFi</span><span style="color:${C.red};font-weight:600">Deviation -17~-19%</span>
             </div>
             <div style="display:flex;justify-content:space-between;padding:4px 0">
-              <span style="font-weight:600">NutriSmart 本机</span><span style="color:${C.green};font-weight:600">平均 +0.4%</span>
+              <span style="font-weight:600">NutriSmart Ours</span><span style="color:${C.green};font-weight:600">Avg +0.4%</span>
             </div>
           </div>
-          <div style="font-size:10px;color:${C.gray};margin-top:6px">数据来源：Consumer Reports 2024 实验室测试</div>
+          <div style="font-size:10px;color:${C.textSecondary};margin-top:6px">Source: Consumer Reports 2024 Lab Test</div>
         </div>
         <div style="display:flex;gap:10px;padding:0 14px;margin-bottom:14px">
-          <div class="btn btn-primary" style="flex:1" data-action="export">📄 导出 PDF</div>
-          <div class="btn btn-outline" style="flex:1" data-action="share">分享报告</div>
+          <div class="btn btn-primary" style="flex:1" data-action="export">\uD83DuDCC4 Export PDF</div>
+          <div class="btn btn-outline" style="flex:1" data-action="share">Share Report</div>
         </div>
       </div>
     `
   },
 
+  // ----- P8: Alerts -----
   p8:{
-    module:'数据洞察',title:'异常模式预警',level:'L3',levelTag:'L3',tagClass:'tag-l3',tab:'',
+    module:'Data Insights',title:'Smart Alerts',level:'L3',levelTag:'L3',tagClass:'tag-l3',
     desc:{
-      scene:'数据洞察',
-      func:'基于喂养数据自动识别异常模式（间隔异常/总量偏离），推送预警+处理建议',
-      interactions:['采纳建议 → P2 出奶（预设已调整）','历史预警条目 → 查看详情','预警规则 → 查看触发条件'],
-      diff:'全市场无品牌提供异常预警；本方案主动洞察，连续3次夜间间隔<2h 即触发建议增加单次容量'
+      scene:'Proactive monitoring / Peace of mind',
+      func:'Auto-detect abnormal feeding patterns (interval anomaly / total volume deviation). Push alert + actionable suggestions.',
+      interactions:['Adopt suggestion \u2192 Go to P2 Brew (preset updated)','History items \u2192 View detail','Alert rules \u2192 View trigger conditions'],
+      diff:'No competitor provides pattern-based alerts. We proactively detect issues \u2014 e.g., 3 consecutive night feeds under 2h interval triggers "increase volume" suggestion automatically.'
     },
     render:()=>`
-      ${navBar('异常预警',{back:1})}
+      ${navBar('Smart Alerts',{back:1,backTarget:'p1'})}
       <div class="content" style="background:${C.bg}">
         <div class="alert-card">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <span style="font-size:20px">⚠️</span>
-            <span style="font-size:15px;font-weight:700;color:${C.accent}">夜间喂养间隔异常</span>
+            <span style="font-size:20px">\u26A0\uFE0F</span>
+            <span style="font-size:15px;font-weight:700;color:${C.orange}">Night Feed Interval Anomaly</span>
           </div>
-          <div style="font-size:13px;color:${C.text};line-height:1.5">连续 3 次夜间喂养间隔 &lt; 2 小时（6月25-26日），宝宝可能未吃饱。</div>
-          <div style="font-size:11px;color:${C.gray};margin-top:6px">最近触发：今日 03:15</div>
+          <div style="font-size:13px;color:${C.text};line-height:1.5">Consecutive 3 night feeds with interval &lt; 2 hours (Jun 25-26). Baby may not be getting enough per feed.</div>
+          <div style="font-size:11px;color:${C.textSecondary};margin-top:6px">Last triggered: Today 03:15</div>
         </div>
-        <div class="section-title">处理建议</div>
+        <div class="section-title">Suggested Actions</div>
         <div class="card">
           <div class="list-item" data-goto="p2">
-            <div style="flex:1"><div style="font-weight:600;font-size:13px">① 增加单次容量至 5oz</div><div style="font-size:11px;color:${C.gray}">基于当前 4oz 预设建议增加</div></div>
-            <div class="btn btn-accent btn-sm">采纳</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">\u2460 Increase to 5oz per feed</div><div style="font-size:11px;color:${C.textSecondary}">Based on current 4oz preset recommendation</div></div>
+            <div class="btn btn-accent btn-sm">Adopt</div>
           </div>
           <div class="list-item">
-            <div style="flex:1"><div style="font-weight:600;font-size:13px">② 睡前增加一次喂养</div><div style="font-size:11px;color:${C.gray}">22:00 前增加 4oz</div></div>
-            <div class="btn btn-outline btn-sm">设置</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">\u2461 Add pre-bedtime feed</div><div style="font-size:11px;color:${C.textSecondary}">Add 4oz before 22:00</div></div>
+            <div class="btn btn-outline btn-sm" data-action="remind">Set</div>
           </div>
           <div class="list-item">
-            <div style="flex:1"><div style="font-weight:600;font-size:13px">③ 咨询儿科医生</div><div style="font-size:11px;color:${C.gray}">如持续建议就医评估</div></div>
-            <div class="btn btn-outline btn-sm" data-goto="p12">查看</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">\u2462 Consult pediatrician</div><div style="font-size:11px;color:${C.textSecondary}">If pattern persists, recommend doctor visit</div></div>
+            <div class="btn btn-outline btn-sm" data-goto="p12">View</div>
           </div>
         </div>
-        <div class="section-title">历史预警</div>
+        <div class="section-title">Alert History</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">单日总量偏离 +25%</div><div style="font-size:11px;color:${C.gray}">6月20日</div></div><span class="pill pill-green">已处理</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">奶粉余量低于 20%</div><div style="font-size:11px;color:${C.gray}">6月18日</div></div><span class="pill pill-green">已处理</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">配比偏差 +2.8%</div><div style="font-size:11px;color:${C.gray}">6月15日</div></div><span class="pill pill-orange">待观察</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">夜间间隔异常</div><div style="font-size:11px;color:${C.gray}">6月10日</div></div><span class="pill" style="background:#F0F0F0;color:${C.gray}">已忽略</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Daily total +25% over average</div><div style="font-size:11px;color:${C.textSecondary}">Jun 20</div></div><span class="pill pill-green">Resolved</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Powder below 20%</div><div style="font-size:11px;color:${C.textSecondary}">Jun 18</div></div><span class="pill pill-green">Resolved</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Deviation +2.8%</div><div style="font-size:11px;color:${C.textSecondary}">Jun 15</div></div><span class="pill pill-orange">Watching</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Night interval anomaly</div><div style="font-size:11px;color:${C.textSecondary}">Jun 10</div></div><span class="pill" style="background:#F0F0F0;color:${C.textSecondary}">Dismissed</span></div>
         </div>
-        <div class="section-title">预警规则</div>
-        <div class="card" style="font-size:12px;color:${C.gray};line-height:1.8">
-          <div>• 连续 3 次喂养间隔 &lt; 2h → 间隔异常</div>
-          <div>• 单日总量偏离均值 > ±20% → 总量异常</div>
-          <div>• 单次配比偏差 > ±2.5% → 精度预警</div>
-          <div>• 奶粉余量 < 20% → 补货提醒</div>
+        <div class="section-title">Alert Rules</div>
+        <div class="card" style="font-size:12px;color:${C.textSecondary};line-height:1.8">
+          <div>\u2022 Consecutive 3 feeds &lt; 2h apart \u2192 Interval Alert</div>
+          <div>\u2022 Daily total deviates > \u00b120% from mean \u2192 Volume Alert</div>
+          <div>\u2022 Single brew deviation > \u00b12.5% \u2192 Precision Alert</div>
+          <div>\u2022 Powder stock &lt; 20% \u2192 Reorder Alert</div>
         </div>
         <div style="height:14px"></div>
       </div>
     `
   },
 
+  // ----- P9: AI Suggestions -----
   p9:{
-    module:'AI 个性化 V2',title:'AI 喂养建议',level:'L4',levelTag:'L4',tagClass:'tag-l4',tab:'',
+    module:'AI Personalization V2',title:'AI Suggestions',level:'L4',levelTag:'L4',tagClass:'tag-l4',
     desc:{
-      scene:'数据洞察 / 科技型千禧妈妈',
-      func:'基于生长曲线+喂养数据+阶段，AI 引擎推送个性化喂养建议，含依据展开与采纳',
-      interactions:['采纳建议 → toast 预设已更新','依据折叠 → 展开数据来源与算法逻辑','免责声明 → 查看详情'],
-      diff:'全市场无品牌提供 AI 喂养建议；本方案 V2 上线，基于积累数据训练，构成 L4 差异化与数据护城河'
+      scene:'Tech-savvy millennial parent / Data-driven decisions',
+      func:'AI engine analyzes growth curves + feeding history + stage to push personalized suggestions. Each includes evidence basis and adopt action.',
+      interactions:['Adopt \u2192 Preset updated toast','Evidence collapse \u2192 Show data source & algorithm logic','Disclaimer \u2192 View details'],
+      diff:'No competitor offers AI-driven feeding advice. Our V2 leverages accumulated training data to create L4 differentiation and a data moat.'
     },
     render:()=>`
-      ${navBar('AI 喂养建议',{back:1,right:'<span class="pill pill-beta">V2 Beta</span>'})}
+      ${navBar('AI Suggestions',{back:1,backTarget:'p1',right:'<span class="pill pill-beta">V2 Beta</span>'})
+}
       <div class="content" style="background:${C.bg}">
         <div class="ai-card">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span style="font-size:24px">🤖</span>
-            <span style="font-size:14px;font-weight:700;color:${C.accent}">基于近30天数据 + WHO 曲线</span>
+            <span style="font-size:24px">\uD83E\uDD16</span>
+            <span style="font-size:14px;font-weight:700;color:${C.accent}">Based on last 30d data + WHO Curves</span>
           </div>
-          <div style="font-size:12px;color:${C.text}">已分析 186 次喂养记录、5 条生长数据，生成 3 条建议</div>
+          <div style="font-size:12px;color:${C.text}">Analyzed 186 feeding records, 5 growth measurements \u2192 3 suggestions generated</div>
         </div>
         <div class="ai-suggestion" style="margin-top:0">
           <div style="display:flex;justify-content:space-between;align-items:start">
             <div style="flex:1">
-              <div style="font-size:14px;font-weight:700;color:${C.primary}">建议 ① 增加单次容量至 5oz</div>
-              <div style="font-size:12px;color:${C.gray};margin-top:4px">夜间间隔过短，4oz 可能不足</div>
+              <div style="font-size:14px;font-weight:700;color:${C.primary}">Suggestion \u2460 Increase to 5oz per feed</div>
+              <div style="font-size:12px;color:${C.textSecondary};margin-top:4px">Night intervals too short; 4oz may be insufficient</div>
             </div>
-            <div class="btn btn-accent btn-sm" data-action="adopt">采纳</div>
+            <div class="btn btn-accent btn-sm" data-action="adopt">Adopt</div>
           </div>
           <details style="margin-top:10px">
-            <summary style="font-size:12px;color:${C.blue2};cursor:pointer">查看依据 ▾</summary>
-            <div style="font-size:11px;color:${C.gray};line-height:1.6;margin-top:8px;padding:8px;background:#F8FAFC;border-radius:6px">
-              <strong>数据来源：</strong>近 3 天夜间喂养记录（间隔均 <2h）<br>
-              <strong>算法逻辑：</strong>WHO 4月龄日均摄入参考 24-32oz，宝宝当前日均 28oz 但夜间频繁，推测单次不足<br>
-              <strong>置信度：</strong>87%
+            <summary style="font-size:12px;color:${C.blue};cursor:pointer">View Evidence \u25BE</summary>
+            <div style="font-size:11px;color:${C.textSecondary};line-height:1.6;margin-top:8px;padding:8px;background:${C.bg};border-radius:6px">
+              <strong>Data source:</strong> Last 3 nights of feeding records (intervals all &lt;2h)<br>
+              <strong>Logic:</strong> WHO 4-month reference 24-32oz/day. Baby currently averaging 28oz but with frequent night feeds, suggesting undersized portions<br>
+              <strong>Confidence:</strong>87%
             </div>
           </details>
         </div>
         <div class="ai-suggestion">
           <div style="display:flex;justify-content:space-between;align-items:start">
             <div style="flex:1">
-              <div style="font-size:14px;font-weight:700;color:${C.primary}">建议 ② 满6个月切换2段奶粉</div>
-              <div style="font-size:12px;color:${C.gray};margin-top:4px">Emma 当前4个月，2个月后提醒</div>
+              <div style="font-size:14px;font-weight:700;color:${C.primary}">Suggestion \u2461 Switch to Stage 2 at 6 months</div>
+              <div style="font-size:12px;color:${C.textSecondary};margin-top:4px">Emma is 4 months now; remind in 2 months</div>
             </div>
-            <div class="btn btn-outline btn-sm" data-action="remind">设置提醒</div>
+            <div class="btn btn-outline btn-sm" data-action="remind">Remind Me</div>
           </div>
           <details style="margin-top:10px">
-            <summary style="font-size:12px;color:${C.blue2};cursor:pointer">查看依据 ▾</summary>
-            <div style="font-size:11px;color:${C.gray};line-height:1.6;margin-top:8px;padding:8px;background:#F8FAFC;border-radius:6px">
-              <strong>数据来源：</strong>婴儿档案月龄 + 奶粉品牌阶段推荐<br>
-              <strong>算法逻辑：</strong>Similac 1段适用 0-6 月，满 6 月建议切换 2 段
+            <summary style="font-size:12px;color:${C.blue};cursor:pointer">View Evidence \u25BE</summary>
+            <div style="font-size:11px;color:${C.textSecondary};line-height:1.6;margin-top:8px;padding:8px;background:${C.bg};border-radius:6px">
+              <strong>Data source:</strong> Baby profile age + formula brand stage guidelines<br>
+              <strong>Logic:</strong> Kabrita Stage 1 suitable for 0-6 months; transition to Stage 2 at 6 months
             </div>
           </details>
         </div>
         <div class="ai-suggestion">
           <div style="display:flex;justify-content:space-between;align-items:start">
             <div style="flex:1">
-              <div style="font-size:14px;font-weight:700;color:${C.green}">建议 ③ 当前喂养节奏良好 ✓</div>
-              <div style="font-size:12px;color:${C.gray};margin-top:4px">日间间隔规律，体重增长符合预期</div>
+              <div style="font-size:14px;font-weight:700;color:${C.green}">Suggestion \u2462 Current rhythm looks great \u2713</div>
+              <div style="font-size:12px;color:${C.textSecondary};margin-top:4px">Day intervals regular, weight gain on track</div>
             </div>
           </div>
         </div>
-        <div style="padding:14px;font-size:11px;color:${C.gray};text-align:center;line-height:1.5">
-          ⚕️ 本建议仅供参考，非医疗建议。如有疑问请咨询儿科医生。
+        <div style="padding:14px;font-size:11px;color:${C.textSecondary};text-align:center;line-height:1.5">
+          \u2695\uFE0F Suggestions are for reference only, not medical advice. Consult your pediatrician if concerned.
         </div>
       </div>
     `
   },
 
+  // ----- P10: Allergy Tracker -----
   p10:{
-    module:'AI 个性化 V2',title:'过敏模式识别',level:'L4',levelTag:'L4',tagClass:'tag-l4',tab:'',
+    module:'AI Personalization V2',title:'Allergy Tracker',level:'L4',levelTag:'L4',tagClass:'tag-l4',
     desc:{
-      scene:'科技型千禧妈妈 / 精准焦虑型父母',
-      func:'记录排便/皮肤反应，关联奶粉品牌，AI 识别潜在过敏原，风险提示',
-      interactions:['+ 添加反应记录 → 弹出录入表单','品牌反应对照表 → 查看历史','风险提示 → 查看详情'],
-      diff:'全市场无品牌提供过敏模式识别；本方案 V2 通过记录+关联分析辅助识别，构建喂养健康数据闭环'
+      scene:'Concerned parent / Food sensitivity investigation',
+      func:'Log bowel/skin reactions, correlate with formula brands. AI identifies potential allergen patterns with risk scoring.',
+      interactions:['+ Add Reaction \u2192 Entry form toast','Brand correlation table \u2192 History view','Risk badge \u2192 Details'],
+      diff:'No competitor offers allergy pattern tracking. Our V2 builds a complete health-data loop through recording + correlation analysis.'
     },
     render:()=>`
-      ${navBar('过敏模式识别',{back:1,right:'<span class="pill pill-beta">V2 Beta</span>'})}
+      ${navBar('Allergy Tracker',{back:1,backTarget:'p1',right:'<span class="pill pill-beta">V2 Beta</span>'})
+}
       <div class="content" style="background:${C.bg}">
-        <div class="card" style="text-align:center;border:1px solid #E8F5EE">
-          <div style="font-size:32px;margin-bottom:8px">✅</div>
-          <div style="font-size:15px;font-weight:700;color:${C.green}">未发现明显过敏模式</div>
-          <div style="font-size:12px;color:${C.gray};margin-top:4px">近30天 3 次轻度湿疹，与奶粉品牌关联性低</div>
+        <div class="card" style="text-align:center;border:1px solid #EAFAF1">
+          <div style="font-size:32px;margin-bottom:8px">\u2705</div>
+          <div style="font-size:15px;font-weight:700;color:${C.green}">No Clear Allergy Pattern Detected</div>
+          <div style="font-size:12px;color:${C.textSecondary};margin-top:4px">3 mild eczema instances in past 30 days; low correlation with current formula</div>
         </div>
         <div style="padding:0 14px;margin-top:12px">
-          <div class="btn btn-outline btn-block" data-action="reaction">+ 添加反应记录</div>
+          <div class="btn btn-outline btn-block" data-action="reaction">+ Log Reaction</div>
         </div>
-        <div class="section-title">关联分析</div>
+        <div class="section-title">Correlation Analysis</div>
         <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0F0F0">
-            <div><div style="font-weight:600;font-size:13px">Similac 1段</div><div style="font-size:11px;color:${C.gray}">当前使用 · 42天</div></div>
-            <div style="text-align:right"><div style="font-size:12px;color:${C.green}">3次轻度湿疹</div><div style="font-size:10px;color:${C.gray}">关联性：低</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F5F2EC">
+            <div><div style="font-weight:600;font-size:13px">Kabrita Goat Stage 1</div><div style="font-size:11px;color:${C.textSecondary}">Current \u00b7 42 days</div></div>
+            <div style="text-align:right"><div style="font-size:12px;color:${C.green}">3 mild eczema</div><div style="font-size:10px;color:${C.textSecondary}">Correlation: Low</div></div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
-            <div><div style="font-weight:600;font-size:13px">Enfamil NeuroPro</div><div style="font-size:11px;color:${C.gray}">历史使用 · 15天</div></div>
-            <div style="text-align:right"><div style="font-size:12px;color:${C.green}">0次反应</div><div style="font-size:10px;color:${C.gray}">关联性：无</div></div>
+            <div><div style="font-weight:600;font-size:13px">Enfamil NeuroPro</div><div style="font-size:11px;color:${C.textSecondary}">Historic \u00b7 15 days</div></div>
+            <div style="text-align:right"><div style="font-size:12px;color:${C.green}">0 reactions</div><div style="font-size:10px;color:${C.textSecondary}">Correlation: None</div></div>
           </div>
         </div>
-        <div class="section-title">近期反应记录</div>
+        <div class="section-title">Recent Reactions</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">轻度湿疹 · 面颊</div><div style="font-size:11px;color:${C.gray}">6月24日 · 严重度 ★★</div></div><span class="pill pill-orange">观察中</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">轻度湿疹 · 面颊</div><div style="font-size:11px;color:${C.gray}">6月18日 · 严重度 ★★</div></div><span class="pill pill-green">已消退</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">轻度湿疹 · 头皮</div><div style="font-size:11px;color:${C.gray}">6月10日 · 严重度 ★</div></div><span class="pill pill-green">已消退</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Mild Eczema \u00b7 Cheeks</div><div style="font-size:11px;color:${C.textSecondary}">Jun 24 \u00b7 Severity \u2605\u2605</div></div><span class="pill pill-orange">Watching</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Mild Eczema \u00b7 Cheeks</div><div style="font-size:11px;color:${C.textSecondary}">Jun 18 \u00b7 Severity \u2605\u2605</div></div><span class="pill pill-green">Resolved</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Mild Eczema \u00b7 Scalp</div><div style="font-size:11px;color:${C.textSecondary}">Jun 10 \u00b7 Severity \u2605</div></div><span class="pill pill-green">Resolved</span></div>
         </div>
-        <div style="padding:14px;font-size:11px;color:${C.gray};text-align:center;line-height:1.5">
-          ⚕️ 本分析仅供参考。如出现严重过敏反应请立即就医。
+        <div style="padding:14px;font-size:11px;color:${C.textSecondary};text-align:center;line-height:1.5">
+          \u2695\uFE0F Analysis is for reference only. Seek immediate medical care for severe allergic reactions.
         </div>
       </div>
     `
   },
 
+  // ----- P11: Multi-User -----
   p11:{
-    module:'生态与管理',title:'多用户权限',level:'L3',levelTag:'L3',tagClass:'tag-l3',tab:'',
+    module:'Ecosystem & Mgmt',title:'Multi-User',level:'L3',levelTag:'L3',tagClass:'tag-l3',
     desc:{
-      scene:'多看护人协同',
-      func:'主账户+最多5个操作员子账户，权限分级+操作日志，保姆/祖辈可出奶但不可改设置',
-      interactions:['操作员条目 → 权限编辑弹层','操作日志 → 查看详情','异常告警条 → 查看拦截记录','+ 添加操作员 → 邀请流程'],
-      diff:'Baby Brezza 单账户单设备，保姆无法使用或主账户需共享密码；本方案多用户权限分级+操作日志，安全协同'
+      scene:'Multiple caregivers / Nanny access',
+      func:'Main account + up to 5 operator sub-accounts. Role-based permissions + operation log. Nanny/grandparents can brew but cannot change settings.',
+      interactions:['Operator item \u2192 Permission edit modal','Operation log \u2192 View details','Blocked action \u2192 View intercept record','+ Add operator \u2192 Invite flow'],
+      diff:'Baby Brezza single-account, single-device. Nanny either cannot use it or must share password. We provide role-based multi-user with operation audit log for safe collaboration.'
     },
     render:()=>`
-      ${navBar('多用户管理',{back:1,right:'+'})}
+      ${navBar('Multi-User',{back:1,backTarget:'p1',right:'+'})
+}
       <div class="content" style="background:${C.bg}">
         <div class="card" style="display:flex;align-items:center;gap:12px">
           <div style="width:44px;height:44px;border-radius:50%;background:${C.primary};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">S</div>
-          <div style="flex:1"><div style="font-weight:700;font-size:14px">Sarah（妈妈）</div><div style="font-size:11px;color:${C.gray}">sarah@email.com</div></div>
-          <span class="role-tag role-admin">管理员</span>
+          <div style="flex:1"><div style="font-weight:700;font-size:14px">Sarah (Mom)</div><div style="font-size:11px;color:${C.textSecondary}">sarah@email.com</div></div>
+          <span class="role-tag role-admin">Admin</span>
         </div>
-        <div class="section-title">操作员（3/5）</div>
+        <div class="section-title">Operators (3/5)</div>
         <div class="card" style="padding:0">
           <div class="list-item">
             <div style="display:flex;align-items:center;gap:10px;flex:1">
-              <div style="width:36px;height:36px;border-radius:50%;background:${C.blue2};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">M</div>
-              <div><div style="font-weight:600;font-size:13px">Mike（爸爸）</div><div style="font-size:11px;color:${C.gray}">可出奶 / 可查看记录</div></div>
+              <div style="width:36px;height:36px;border-radius:50%;background:${C.blue};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">M</div>
+              <div><div style="font-weight:600;font-size:13px">Mike (Dad)</div><div style="font-size:11px;color:${C.textSecondary}">Can brew / Can view logs</div></div>
             </div>
-            <span class="role-tag role-operator">操作员</span>
+            <span class="role-tag role-operator">Operator</span>
           </div>
           <div class="list-item">
             <div style="display:flex;align-items:center;gap:10px;flex:1">
               <div style="width:36px;height:36px;border-radius:50%;background:${C.accent};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">L</div>
-              <div><div style="font-weight:600;font-size:13px">Linda（保姆）</div><div style="font-size:11px;color:${C.gray}">仅出奶</div></div>
+              <div><div style="font-weight:600;font-size:13px">Linda (Nanny)</div><div style="font-size:11px;color:${C.textSecondary}">Brew only</div></div>
             </div>
-            <span class="role-tag role-operator">操作员</span>
+            <span class="role-tag role-operator">Operator</span>
           </div>
           <div class="list-item">
             <div style="display:flex;align-items:center;gap:10px;flex:1">
               <div style="width:36px;height:36px;border-radius:50%;background:${C.green};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">G</div>
-              <div><div style="font-weight:600;font-size:13px">Grandma（祖辈）</div><div style="font-size:11px;color:${C.gray}">仅出奶</div></div>
+              <div><div style="font-weight:600;font-size:13px">Grandma</div><div style="font-size:11px;color:${C.textSecondary}">Brew only</div></div>
             </div>
-            <span class="role-tag role-operator">操作员</span>
+            <span class="role-tag role-operator">Operator</span>
           </div>
         </div>
-        <div style="margin:12px 14px;background:#FBE9E7;border:1px solid #F5C6C0;border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px">
-          <span style="font-size:18px">🚫</span>
-          <div style="font-size:12px;color:${C.red}"><strong>06-25 10:32</strong> Linda 尝试修改奶粉设置，已拦截并通知管理员</div>
+        <div style="margin:12px 14px;background:#FDEDEC;border:1px solid #F5C6BE;border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px">\uD83D\uDEAB</span>
+          <div style="font-size:12px;color:${C.red}"><strong>Jun 25, 10:32</strong> Linda tried to change formula settings \u2014 blocked & admin notified</div>
         </div>
-        <div class="section-title">今日操作日志</div>
+        <div class="section-title">Today's Activity Log</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Sarah</strong> 制作 4oz</div><div style="font-size:11px;color:${C.gray}">14:30 · 偏差 +1.2% ✓</div></div><span style="color:${C.green}">✓</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Linda</strong> 制作 5oz</div><div style="font-size:11px;color:${C.gray}">11:00 · 设置号 4 ✓ · 偏差 -0.8%</div></div><span style="color:${C.green}">✓</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Sarah</strong> 制作 4oz</div><div style="font-size:11px;color:${C.gray}">03:15 · 偏差 +2.8% ⚠</div></div><span style="color:${C.accent}">⚠</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Linda</strong> 尝试修改设置</div><div style="font-size:11px;color:${C.gray}">昨日 10:32</div></div><span style="color:${C.red}">🚫</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Sarah</strong> brewed 4oz</div><div style="font-size:11px;color:${C.textSecondary}">14:30 \u00b7 Dev +1.2% \u2713</div></div><span style="color:${C.green}">\u2713</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Linda</strong> brewed 5oz</div><div style="font-size:11px;color:${C.textSecondary}">11:00 \u00b7 Setting #4 \u2713 \u00b7 Dev -0.8%</div></div><span style="color:${C.green}">\u2713</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Sarah</strong> brewed 4oz</div><div style="font-size:11px;color:${C.textSecondary}">03:15 \u00b7 Dev +2.8% \u26A0\uFE0F</div></div><span style="color:${C.orange}">\u26A0\uFE0F</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px"><strong>Linda</strong> tried to change settings</div><div style="font-size:11px;color:${C.textSecondary}">Yesterday 10:32</div></div><span style="color:${C.red}">\uD83D\uDEAB</span></div>
         </div>
         <div style="height:14px"></div>
       </div>
     `
   },
 
+  // ----- P12: Ecosystem -----
   p12:{
-    module:'生态与管理',title:'生态联动',level:'L5',levelTag:'L5',tagClass:'tag-l5',tab:'',
+    module:'Ecosystem & Mgmt',title:'Ecosystem',level:'L5',levelTag:'L5',tagClass:'tag-l5',
     desc:{
-      scene:'生态扩展 / 远程医疗',
-      func:'对接 Owlet/Nanit 可穿戴设备，同步心率/睡眠数据，生成综合健康报告，支持 FHIR 标准导出',
-      interactions:['设备卡 → 查看设备详情','导出医生报告 → 模拟下载 toast','远程医疗 → Coming Soon 提示','喂养-睡眠关联图 → 查看详情'],
-      diff:'全市场无品牌对接可穿戴设备；本方案 V3 构建 L5 生态护城河，喂养+生理数据综合分析'
+      scene:'Ecosystem expansion / Telehealth',
+      func:'Connect Owlet/Nanit wearables. Sync heart rate / sleep data. Generate comprehensive health report. FHIR-standard export for pediatricians.',
+      interactions:['Device card \u2192 Device detail','Export Doctor Report \u2192 Download toast','Telehealth \u2192 Coming Soon toast','Feed-Sleep correlation chart \u2192 Detail view'],
+      diff:'No competitor connects to wearables. Our V3 builds L5 ecosystem moat \u2014 combined analysis of feeding + physiological data.'
     },
     render:()=>`
-      ${navBar('生态联动',{back:1,right:'<span class="pill" style="background:linear-gradient(90deg,#E87A2E,#C0392B);color:#fff">V3</span>'})}
+      ${navBar('Ecosystem',{back:1,backTarget:'p1',right:'<span class="pill pill-v3">V3</span>'})
+}
       <div class="content" style="background:${C.bg}">
-        <div class="section-title">已连接设备</div>
+        <div class="section-title">Connected Devices</div>
         <div style="padding:0 14px">
           <div class="eco-device">
-            <div style="width:40px;height:40px;border-radius:10px;background:#E8EFF7;display:flex;align-items:center;justify-content:center;font-size:20px">🧦</div>
-            <div style="flex:1"><div style="font-weight:600;font-size:13px">Owlet Smart Sock</div><div style="font-size:11px;color:${C.gray}">心率 · 血氧</div></div>
+            <div style="width:40px;height:40px;border-radius:10px;background:#EBF5FB;display:flex;align-items:center;justify-content:center;font-size:20px">\uD83E\uDDFD</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">Owlet Smart Sock</div><div style="font-size:11px;color:${C.textSecondary}">Heart Rate \u00b7 SpO2</div></div>
             <div class="eco-dot"></div>
           </div>
           <div class="eco-device">
-            <div style="width:40px;height:40px;border-radius:10px;background:#E8EFF7;display:flex;align-items:center;justify-content:center;font-size:20px">📹</div>
-            <div style="flex:1"><div style="font-weight:600;font-size:13px">Nanit 摄像头</div><div style="font-size:11px;color:${C.gray}">睡眠 · 呼吸</div></div>
+            <div style="width:40px;height:40px;border-radius:10px;background:#EBF5FB;display:flex;align-items:center;justify-content:center;font-size:20px">\uD83D\uDCF7</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">Nanit Pro Camera</div><div style="font-size:11px;color:${C.textSecondary}">Sleep \u00b7 Breathing</div></div>
             <div class="eco-dot"></div>
           </div>
         </div>
-        <div class="section-title">综合健康报告</div>
-        <div class="card card-dark">
+        <div class="section-title">Health Summary</div>
+        <div class="card" style="background:${C.primary};color:#fff;">
           <div style="display:flex;justify-content:space-around;text-align:center">
-            <div><div style="font-size:11px;color:${C.lightblue}">心率均值</div><div style="font-size:20px;font-weight:700">132<span style="font-size:11px">bpm</span></div><div style="font-size:10px;color:${C.green}">正常</div></div>
-            <div><div style="font-size:11px;color:${C.lightblue}">血氧</div><div style="font-size:20px;font-weight:700">98<span style="font-size:11px">%</span></div><div style="font-size:10px;color:${C.green}">正常</div></div>
-            <div><div style="font-size:11px;color:${C.lightblue}">睡眠</div><div style="font-size:20px;font-weight:700">12<span style="font-size:11px">h</span></div><div style="font-size:10px;color:${C.accent}">夜醒3次</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Avg HR</div><div style="font-size:20px;font-weight:700">132<span style="font-size:11px">bpm</span></div><div style="font-size:10px;color:${C.green}">Normal</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">SpO2</div><div style="font-size:20px;font-weight:700">98<span style="font-size:11px">%</span></div><div style="font-size:10px;color:${C.green}">Normal</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Sleep</div><div style="font-size:20px;font-weight:700">12<span style="font-size:11px">h</span></div><div style="font-size:10px;color:${C.orange}">3 wake-ups</div></div>
           </div>
         </div>
-        <div class="section-title">喂养 - 睡眠关联</div>
+        <div class="section-title">Feeding \u2192 Sleep Correlation</div>
         <div class="card">
           <svg width="100%" height="120" viewBox="0 0 320 120">
-            <line x1="10" y1="100" x2="310" y2="100" stroke="#E5E5E5"/>
+            <line x1="10" y1="100" x2="310" y2="100" stroke="#E8E2D8"/>
             <rect x="30" y="60" width="16" height="40" fill="${C.accent}" rx="2" opacity=".7"/>
             <rect x="80" y="50" width="16" height="50" fill="${C.accent}" rx="2" opacity=".7"/>
             <rect x="130" y="70" width="16" height="30" fill="${C.accent}" rx="2" opacity=".7"/>
             <rect x="180" y="45" width="16" height="55" fill="${C.accent}" rx="2" opacity=".7"/>
             <rect x="230" y="55" width="16" height="45" fill="${C.accent}" rx="2" opacity=".7"/>
             <rect x="280" y="62" width="16" height="38" fill="${C.accent}" rx="2" opacity=".7"/>
-            <path d="M38,30 Q88,20 138,35 T188,15 T238,25 T288,22" fill="none" stroke="${C.blue2}" stroke-width="2"/>
-            <circle cx="38" cy="30" r="3" fill="${C.blue2}"/>
-            <circle cx="88" cy="20" r="3" fill="${C.blue2}"/>
-            <circle cx="138" cy="35" r="3" fill="${C.blue2}"/>
-            <circle cx="188" cy="15" r="3" fill="${C.blue2}"/>
-            <circle cx="238" cy="25" r="3" fill="${C.blue2}"/>
-            <circle cx="288" cy="22" r="3" fill="${C.blue2}"/>
-            <text x="5" y="14" font-size="8" fill="${C.blue2}">睡眠</text>
-            <text x="5" y="55" font-size="8" fill="${C.accent}">喂养</text>
+            <path d="M38,30 Q88,20 138,35 T188,15 T238,25 T288,22" fill="none" stroke="${C.blue}" stroke-width="2"/>
+            <circle cx="38" cy="30" r="3" fill="${C.blue}"/>
+            <circle cx="88" cy="20" r="3" fill="${C.blue}"/>
+            <circle cx="138" cy="35" r="3" fill="${C.blue}"/>
+            <circle cx="188" cy="15" r="3" fill="${C.blue}"/>
+            <circle cx="238" cy="25" r="3" fill="${C.blue}"/>
+            <circle cx="288" cy="22" r="3" fill="${C.blue}"/>
+            <text x="5" y="14" font-size="8" fill="${C.blue}">Sleep Quality</text>
+            <text x="5" y="55" font-size="8" fill="${C.accent}">Feeding</text>
           </svg>
-          <div style="font-size:11px;color:${C.gray};text-align:center;margin-top:4px">近6次喂养后1h内睡眠质量趋势</div>
+          <div style="font-size:11px;color:${C.textSecondary};text-align:center;margin-top:4px">Sleep quality trend within 1h after last 6 feeds</div>
         </div>
-        <div class="section-title">可连接服务</div>
+        <div class="section-title">Available Services</div>
         <div class="card" style="display:flex;align-items:center;gap:12px;opacity:.6">
-          <div style="width:40px;height:40px;border-radius:10px;background:#F0F0F0;display:flex;align-items:center;justify-content:center;font-size:20px">⚕️</div>
-          <div style="flex:1"><div style="font-weight:600;font-size:13px">远程医疗</div><div style="font-size:11px;color:${C.gray}">儿科医生远程咨询</div></div>
-          <span style="font-size:11px;color:${C.gray}">即将上线</span>
+          <div style="width:40px;height:40px;border-radius:10px;background:#F0F0F0;display:flex;align-items:center;justify-content:center;font-size:20px">\u2695\uFE0F</div>
+          <div style="flex:1"><div style="font-weight:600;font-size:13px">Telehealth</div><div style="font-size:11px;color:${C.textSecondary}">Pediatrician video consultation</div></div>
+          <span style="font-size:11px;color:${C.textSecondary}">Coming Soon</span>
         </div>
         <div style="padding:14px">
-          <div class="btn btn-primary btn-block" data-action="fhir">📄 导出医生报告（FHIR）</div>
+          <div class="btn btn-primary btn-block" data-action="fhir">\uD83D\uDCC4 Export Doctor Report (FHIR)</div>
         </div>
       </div>
     `
   },
 
+  // ----- P13: Subscription -----
   p13:{
-    module:'生态与管理',title:'订阅制管理',level:'L5',levelTag:'L5',tagClass:'tag-l5',tab:'',
+    module:'Ecosystem & Mgmt',title:'Subscription',level:'L5',levelTag:'L5',tagClass:'tag-l5',
     desc:{
-      scene:'生态扩展 / 商业模式',
-      func:'奶粉订阅计划+自动补货设置，余量<15%自动触发发货，锁定长期用户',
-      interactions:['修改计划 → 弹出修改表单','暂停/取消 → 确认弹层','自动补货开关 → 切换状态'],
-      diff:'全市场无品牌采用订阅制；本方案 V3 以库存智能管理驱动订阅，设备低价+奶粉订阅锁定用户终身价值'
+      scene:'Ecosystem / Business model',
+      func:'Formula subscription plan + auto-replenish. When stock drops below 15%, auto-trigger shipment. Locks long-term customer value.',
+      interactions:['Modify plan \u2192 Edit form modal','Pause/Cancel \u2192 Confirmation dialog','Auto-replenish toggle \u2192 Switch state'],
+      diff:'No competitor uses subscription model. Our V3 drives subscriptions through smart inventory management \u2014 low hardware price + recurring formula revenue locks in lifetime value.'
     },
     render:()=>`
-      ${navBar('奶粉订阅',{back:1,right:'<span class="pill" style="background:linear-gradient(90deg,#E87A2E,#C0392B);color:#fff">V3</span>'})}
+      ${navBar('Subscription',{back:1,backTarget:'p1',right:'<span class="pill pill-v3">V3</span>'})
+}
       <div class="content" style="background:${C.bg}">
-        <div class="card card-dark">
+        <div class="card" style="background:${C.primary};color:#fff;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div><div style="font-size:12px;color:${C.lightblue}">订阅计划</div><div style="font-size:18px;font-weight:700">Similac 1段 · 每月1罐</div></div>
-            <span class="pill pill-green" style="background:rgba(46,139,87,.2);color:${C.green}">进行中</span>
+            <div><div style="font-size:12px;color:rgba(255,255,255,.5)">Plan</div><div style="font-size:18px;font-weight:700">Kabrita Stage 1 \u00b7 Monthly</div></div>
+            <span class="pill pill-green" style="background:rgba(39,174,96,.2);color:${C.green}">Active</span>
           </div>
           <div style="display:flex;justify-content:space-between">
-            <div><div style="font-size:11px;color:${C.lightblue}">月费</div><div style="font-size:20px;font-weight:700">$39</div></div>
-            <div><div style="font-size:11px;color:${C.lightblue}">下次发货</div><div style="font-size:14px;font-weight:600">7月15日</div></div>
-            <div><div style="font-size:11px;color:${C.lightblue}">已配送</div><div style="font-size:14px;font-weight:600">3次</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Monthly</div><div style="font-size:20px;font-weight:700">$39</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Next Ship</div><div style="font-size:14px;font-weight:600">Jul 15</div></div>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.5)">Shipped</div><div style="font-size:14px;font-weight:600">3 times</div></div>
           </div>
         </div>
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <div><div style="font-weight:600;font-size:13px">自动补货</div><div style="font-size:11px;color:${C.gray}">余量 &lt; 15% 自动触发发货</div></div>
+            <div><div style="font-weight:600;font-size:13px">Auto-Replenish</div><div style="font-size:11px;color:${C.textSecondary}">Auto-ship when stock &lt; 15%</div></div>
             <div class="sub-switch" data-action="toggle"></div>
           </div>
         </div>
-        <div class="section-title">配送信息</div>
+        <div class="section-title">Shipping Info</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="font-size:12px;color:${C.gray}">地址</div><div style="font-size:13px">123 Main St, NYC, NY 10001</div></div>
-          <div class="list-item"><div style="font-size:12px;color:${C.gray}">支付方式</div><div style="font-size:13px">Visa ****4242</div></div>
+          <div class="list-item"><div style="font-size:12px;color:${C.textSecondary}">Address</div><div style="font-size:13px">123 Main St, NYC, NY 10001</div></div>
+          <div class="list-item"><div style="font-size:12px;color:${C.textSecondary}">Payment</div><div style="font-size:13px">Visa ****4242</div></div>
         </div>
-        <div class="section-title">历史订单</div>
+        <div class="section-title">Order History</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Similac 1段 · 1罐</div><div style="font-size:11px;color:${C.gray}">6月15日 · $39</div></div><span style="color:${C.green};font-size:12px">已签收</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Similac 1段 · 1罐</div><div style="font-size:11px;color:${C.gray}">5月15日 · $39</div></div><span style="color:${C.green};font-size:12px">已签收</span></div>
-          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Similac 1段 · 1罐</div><div style="font-size:11px;color:${C.gray}">4月15日 · $39</div></div><span style="color:${C.green};font-size:12px">已签收</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">Jun 15 \u00b7 $39</div></div><span style="color:${C.green};font-size:12px">Delivered</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">May 15 \u00b7 $39</div></div><span style="color:${C.green};font-size:12px">Delivered</span></div>
+          <div class="list-item"><div style="flex:1"><div style="font-size:13px;font-weight:600">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">Apr 15 \u00b7 $39</div></div><span style="color:${C.green};font-size:12px">Delivered</span></div>
         </div>
         <div style="display:flex;gap:10px;padding:14px">
-          <div class="btn btn-outline" style="flex:1" data-action="modify">修改计划</div>
-          <div class="btn btn-outline" style="flex:1;color:${C.red};border-color:${C.red}" data-action="cancel">暂停订阅</div>
+          <div class="btn btn-outline" style="flex:1" data-action="modify">Edit Plan</div>
+          <div class="btn btn-outline" style="flex:1;color:${C.red};border-color:${C.red}" data-action="cancel">Pause</div>
         </div>
       </div>
     `
   },
 
+  // ----- P14: Settings -----
   p14:{
-    module:'生态与管理',title:'设置',level:'L1',levelTag:'L1',tagClass:'tag-l1',tab:'me',
+    module:'Ecosystem & Mgmt',title:'Settings',level:'L1',levelTag:'L1',tagClass:'tag-l1',
     desc:{
-      scene:'设备管理 / 隐私合规',
-      func:'设备状态、账户管理、婴儿档案、隐私合规（COPPA/GDPR-K）、通知设置、关于',
-      interactions:['设备状态 → 查看详情','隐私合规 → 查看数据权利','通知设置 → 配置推送','关于 → 版本/帮助/反馈'],
-      diff:'Baby Brezza 无隐私合规入口；本方案从架构层 COPPA/GDPR-K 合规，数据权利透明可操作'
+      scene:'Device management / Privacy compliance',
+      func:'Device status, account management, baby profile, privacy (COPPA/GDPR-K), notifications, about.',
+      interactions:['Device status \u2192 Detail','Privacy \u2192 Data rights','Notifications \u2192 Configure push','About \u2192 Version / help / feedback'],
+      diff:'Baby Brezza has no privacy entry point. We architect for COPPA/GDPR-K compliance from ground up \u2014 data rights are transparent and actionable.'
     },
     render:()=>`
-      ${navBar('设置')}
+      ${navBar('Settings',{back:1,backTarget:'p1'})
+}
       <div class="content" style="background:${C.bg}">
-        <div class="section-title">设备</div>
+        <div class="section-title">Device</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🔧</span><div><div style="font-weight:600;font-size:13px">NutriSmart 主机</div><div style="font-size:11px;color:${C.green}">● 在线 · 固件 v1.2.3</div></div></div><span style="color:${C.gray}">›</span></div>
-          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">📶</span><div style="font-size:13px">WiFi 信号</div></div><span style="font-size:12px;color:${C.gray}">-45dBm 优秀</span></div>
+          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83D\uDD27</span><div><div style="font-weight:600;font-size:13px">NutriSmart Pro Unit</div><div style="font-size:11px;color:${C.green}">\u25CF Online \u00b7 FW v1.2.3</div></div></div><span style="color:${C.textSecondary}">\u203A</span></div>
+          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83D\uDCF1</span><div style="font-size:13px">WiFi Signal</div></div><span style="font-size:12px;color:${C.textSecondary}">-45dBm Excellent</span></div>
         </div>
-        <div class="section-title">账户</div>
+        <div class="section-title">Account</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:${C.primary};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px">S</div><div><div style="font-weight:600;font-size:13px">Sarah</div><div style="font-size:11px;color:${C.gray}">sarah@email.com</div></div></div><span style="color:${C.gray}">›</span></div>
-          <div class="list-item" data-goto="p11"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">👥</span><div style="font-size:13px">多用户管理</div></div><span style="color:${C.gray}">3 位操作员 ›</span></div>
+          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:${C.primary};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px">S</div><div><div style="font-weight:600;font-size:13px">Sarah</div><div style="font-size:11px;color:${C.textSecondary}">sarah@email.com</div></div></div><span style="color:${C.textSecondary}">\u203A</span></div>
+          <div class="list-item" data-goto="p11"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83D\uDC65</span><div style="font-size:13px">Multi-User</div></div><span style="color:${C.textSecondary}">3 ops \u203A</span></div>
         </div>
-        <div class="section-title">婴儿档案</div>
+        <div class="section-title">Baby Profile</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">👶</span><div><div style="font-weight:600;font-size:13px">Emma</div><div style="font-size:11px;color:${C.gray}">4个月 · 女 · 6.2kg</div></div></div><span style="color:${C.gray}">›</span></div>
-          <div class="list-item" data-goto="p6"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">📈</span><div style="font-size:13px">生长数据</div></div><span style="color:${C.gray}">›</span></div>
+          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83E\uDDB8</span><div><div style="font-weight:600;font-size:13px">Emma</div><div style="font-size:11px;color:${C.textSecondary}">4 mo \u00b7 Female \u00b7 6.2 kg</div></div></div><span style="color:${C.textSecondary}">\u203A</span></div>
+          <div class="list-item" data-goto="p6"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83D\uDCCA</span><div style="font-size:13px">Growth Data</div></div><span style="color:${C.textSecondary}">\u203A</span></div>
         </div>
-        <div class="section-title">隐私与合规</div>
+        <div class="section-title">Privacy & Compliance</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🔒</span><div><div style="font-weight:600;font-size:13px">数据权利</div><div style="font-size:11px;color:${C.gray}">COPPA / GDPR-K</div></div></div><span style="color:${C.gray}">›</span></div>
-          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">📤</span><div style="font-size:13px">导出我的数据</div></div><span style="color:${C.gray}">›</span></div>
-          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🗑️</span><div style="font-size:13px;color:${C.red}">删除账户</div></div><span style="color:${C.gray}">›</span></div>
+          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83D\uDD12</span><div><div style="font-weight:600;font-size:13px">Data Rights</div><div style="font-size:11px;color:${C.textSecondary}">COPPA / GDPR-K</div></div></div><span style="color:${C.textSecondary}">\u203A</span></div>
+          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83D\uCEE4\uFE0F</span><div style="font-size:13px">Export My Data</div></div><span style="color:${C.textSecondary}">\u203A</span></div>
+          <div class="list-item"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">\uD83D\uDDD1\uFE0F</span><div style="font-size:13px;color:${C.red}">Delete Account</div></div><span style="color:${C.textSecondary}">\u203A</span></div>
         </div>
-        <div class="section-title">通知</div>
+        <div class="section-title">Notifications</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="font-size:13px">推送通知</div><div class="sub-switch" data-action="toggle"></div></div>
-          <div class="list-item"><div style="font-size:13px">邮件提醒</div><div class="sub-switch" data-action="toggle" style="background:#E5E5E5"></div></div>
+          <div class="list-item"><div style="font-size:13px">Push Notifications</div><div class="sub-switch" data-action="toggle"></div></div>
+          <div class="list-item"><div style="font-size:13px">Email Alerts</div><div class="sub-switch" data-action="toggle" style="background:#E8E2D8"></div></div>
         </div>
-        <div class="section-title">关于</div>
+        <div class="section-title">About</div>
         <div class="card" style="padding:0">
-          <div class="list-item"><div style="font-size:13px">版本</div><span style="font-size:12px;color:${C.gray}">v1.0.0</span></div>
-          <div class="list-item"><div style="font-size:13px">帮助中心</div><span style="color:${C.gray}">›</span></div>
-          <div class="list-item"><div style="font-size:13px">反馈</div><span style="color:${C.gray}">›</span></div>
+          <div class="list-item"><div style="font-size:13px">Version</div><span style="font-size:12px;color:${C.textSecondary}">v2.0.0</span></div>
+          <div class="list-item"><div style="font-size:13px">Help Center</div><span style="color:${C.textSecondary}">\u203A</span></div>
+          <div class="list-item"><div style="font-size:13px">Feedback</div><span style="color:${C.textSecondary}">\u203A</span></div>
         </div>
-        <div style="padding:20px;text-align:center;font-size:11px;color:${C.gray}">
-          NutriSmart · A Feeding Intelligence System<br>© 2026
+        <div style="padding:20px;text-align:center;font-size:11px;color:${C.textSecondary}">
+          NutriSmart \u00b7 A Feeding Intelligence System<br>\u00a9 2026
         </div>
         <div style="height:14px"></div>
       </div>
     `
-  },
+  }
 };
 
-// ===== 右栏描述模板 =====
+// Remove broken p5 definition that had self-reference issue
+delete PAGES['p5'];
+
+// Properly define p5
+PAGES.p5 = (()=>{
+  const baseRender = ()=>{
+    return `
+    ${navBar('Formula Stock',{back:1,backTarget:'p1'})}
+    <div class="content" style="background:${C.bg}">
+      <div class="card" style="text-align:center">
+        <div style="display:flex;justify-content:center;margin-bottom:12px">${ringSVG(68,100,8)}</div>
+        <div style="font-size:16px;font-weight:700;color:${C.primary}">Kabrita Goat Stage 1</div>
+        <div style="font-size:13px;color:${C.textSecondary};margin-top:4px">68% left \u00b7 ~5.2 days / 21oz</div>
+      </div>
+      <div class="section-title">7-Day Usage Trend</div>
+      <div class="card">
+        <div class="inv-bar">
+          <div class="inv-bar-col" style="height:60%"></div>
+          <div class="inv-bar-col" style="height:75%"></div>
+          <div class="inv-bar-col" style="height:50%"></div>
+          <div class="inv-bar-col" style="height:65%"></div>
+          <div class="inv-bar-col" style="height:70%"></div>
+          <div class="inv-bar-col" style="height:80%"></div>
+          <div class="inv-bar-col" style="height:55%;background:${C.accent};opacity:1"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:${C.textSecondary};margin-top:4px">
+          <span>Jun 20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
+        </div>
+        <div style="font-size:11px;color:${C.textSecondary};text-align:center;margin-top:8px">Daily avg 4.6oz</div>
+      </div>
+      <div style="margin:12px 14px;background:#FEF5E7;border:1px solid #FCEBBF;border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">\u26A0\uFE0F</span>
+        <div style="flex:1;font-size:13px;color:${C.text}">Expected empty <strong>Jul 1</strong>. Restock recommended.</div>
+      </div>
+      <div style="display:flex;gap:10px;padding:0 14px">
+        <div class="btn btn-accent" style="flex:1" data-action="order">Order Now</div>
+        <div class="btn btn-outline" style="flex:1" data-goto="p13">Subscribe</div>
+      </div>
+      <div class="section-title">Restock History</div>
+      <div class="card" style="padding:0">
+        <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">Jun 18 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+        <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 1 Can</div><div style="font-size:11px;color:${C.textSecondary}">May 20 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+        <div class="list-item"><div><div style="font-weight:600;font-size:13px">Kabrita Stage 1 \u00b7 2 Cans</div><div style="font-size:11px;color:${C.textSecondary}">Apr 15 \u00b7 Delivered</div></div><div style="color:${C.green};font-size:12px">\u2713</div></div>
+      </div>
+      <div style="height:14px"></div>
+    </div>
+  `};
+  return {
+    module:'Data Insights',title:'Formula Stock',level:'L3',levelTag:'L3',tagClass:'tag-l3',
+    desc:{
+      scene:'Stock management / Auto-replenishment',
+      func:'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.',
+      interactions:['One-tap order \u2192 Order confirmation toast','Auto-subscribe \u2192 P13 Subscription Management','Ring indicator \u2192 Live remaining % and estimated days'],
+      diff:'Tommee Tippee parents explicitly request app stock alerts but it was never built. We deliver precise stock estimation via weighing sensor + smart reordering.'
+    },
+    render:baseRender
+  };
+})();
+
+// ===== Right Panel Description Template =====
 function descTemplate(p){
   const d = p.desc;
   return `
@@ -1011,25 +1243,25 @@ function descTemplate(p){
     <div class="dp-title">${p.title}</div>
     <div class="dp-hr"></div>
     <div class="dp-section">
-      <div class="dp-label">功能说明</div>
+      <div class="dp-label">What It Does</div>
       <div class="dp-text">${d.func}</div>
     </div>
     <div class="dp-section">
-      <div class="dp-label">用户场景</div>
+      <div class="dp-label">User Scenario</div>
       <div class="dp-text">${d.scene}</div>
     </div>
     <div class="dp-section">
-      <div class="dp-label">关键交互点</div>
+      <div class="dp-label">Key Interactions</div>
       <ul class="dp-list">${d.interactions.map(i=>`<li>${i}</li>`).join('')}</ul>
     </div>
     <div class="dp-section">
-      <div class="dp-label">智能化差异化</div>
+      <div class="dp-label">Competitive Edge</div>
       <div class="dp-diff">${d.diff}</div>
     </div>
   `;
 }
 
-// ===== 左栏目录树渲染 =====
+// ===== Left Sidebar Tree =====
 function renderTree(){
   const modules = {};
   Object.entries(PAGES).forEach(([id,p])=>{
@@ -1052,35 +1284,32 @@ function renderTree(){
   tree.innerHTML = html;
 }
 
-// ===== 当前页面 =====
-let currentPage = 'p1';
+// ===== Current Page =====
+let currentPage = 'p0';
 
-// ===== 切换页面 =====
+// ===== Switch Page =====
 function switchPage(id){
   const p = PAGES[id];
   if(!p) return;
   currentPage = id;
   const screen = document.getElementById('screen');
-  screen.innerHTML = statusBar() + p.render() + (p.tab ? tabBar(p.tab) : '');
+  screen.innerHTML = statusBar() + p.render();
   document.getElementById('descPanel').innerHTML = descTemplate(p);
   document.querySelectorAll('.tree-item').forEach(el=>{
     el.classList.toggle('active', el.dataset.page===id);
   });
-  // 滚动到顶部
   const content = screen.querySelector('.content');
   if(content) content.scrollTop = 0;
-  // 绑定出奶动画
   if(id==='p2') bindBrew();
   if(id==='p3') bindScan();
 }
 
-// ===== P2 出奶动画 =====
+// ===== P2 Brew Animation =====
 function bindBrew(){
   const startBtn = document.getElementById('brewStart');
   if(!startBtn) return;
   startBtn.onclick = ()=>{
     const content = document.getElementById('brewContent');
-    // 阶段3: 出奶动画
     content.innerHTML = `
       <div class="brew-anim" style="min-height:400px">
         <div class="brew-ring">
@@ -1088,12 +1317,12 @@ function bindBrew(){
             <circle class="brew-ring-bg" cx="80" cy="80" r="70"/>
             <circle class="brew-ring-fg" id="brewRingFg" cx="80" cy="80" r="70" stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
           </svg>
-          <div class="brew-ring-text"><div class="g" id="brewWeight">0.0g</div><div class="l">称重中</div></div>
+          <div class="brew-ring-text"><div class="g" id="brewWeight">0.0g</div><div class="l">Weighing...</div></div>
         </div>
-        <div style="font-size:14px;font-weight:600;color:${C.primary};margin-bottom:6px">称重校准中…</div>
-        <div style="font-size:12px;color:${C.gray}">目标 23.4g (4oz · 4.3g/oz)</div>
-        <div style="margin-top:12px;font-size:13px;color:${C.green}">实时偏差 <strong id="brewDev">+0.0%</strong> ✓</div>
-        <div style="margin-top:16px;font-size:12px;color:${C.gray}">温度 98°F · 状态正常</div>
+        <div style="font-size:14px;font-weight:600;color:${C.primary};margin-bottom:6px">Calibrating Weight...</div>
+        <div style="font-size:12px;color:${C.textSecondary}">Target 23.4g (4oz \u00b7 4.3g/oz)</div>
+        <div style="margin-top:12px;font-size:13px;color:${C.green}">Live Deviation <strong id="brewDev">+0.0%</strong> \u2713</div>
+        <div style="margin-top:16px;font-size:12px;color:${C.textSecondary}">Temp 104\u00b0F \u00b7 System OK</div>
       </div>
     `;
     let progress = 0, weight = 0;
@@ -1115,12 +1344,12 @@ function bindBrew(){
         setTimeout(()=>{
           content.innerHTML = `
             <div class="brew-done" style="min-height:400px">
-              <div class="brew-done-check">✓</div>
-              <div style="font-size:18px;font-weight:700;color:${C.primary};margin-bottom:8px">出奶完成</div>
-              <div style="font-size:14px;color:${C.text};margin-bottom:4px">4.0oz / 98°F / Similac 1段</div>
-              <div style="font-size:13px;color:${C.green};margin-bottom:4px">偏差 +1.2% ✓ 在合格范围内</div>
-              <div style="font-size:12px;color:${C.gray};margin-bottom:24px">已自动记录到今日喂养记录</div>
-              <div class="btn btn-accent btn-block" style="max-width:200px" onclick="switchPage('p1')">完成</div>
+              <div class="brew-done-check">\u2713</div>
+              <div style="font-size:18px;font-weight:700;color:${C.primary};margin-bottom:8px">Bottle Ready!</div>
+              <div style="font-size:14px;color:${C.text};margin-bottom:4px">4.0oz / 104\u00b0F / Kabrita Goat</div>
+              <div style="font-size:13px;color:${C.green};margin-bottom:4px">Deviation +1.2% \u2713 Within tolerance</div>
+              <div style="font-size:12px;color:${C.textSecondary};margin-bottom:24px">Logged to today's feeding record</div>
+              <div class="btn btn-accent btn-block" style="max-width:200px" onclick="switchPage('p1')">Done</div>
             </div>
           `;
         },600);
@@ -1129,7 +1358,7 @@ function bindBrew(){
   };
 }
 
-// ===== P3 扫码动画 =====
+// ===== P3 Scan Animation =====
 function bindScan(){
   const frame = document.getElementById('scanFrame');
   const area = document.getElementById('scanArea');
@@ -1139,37 +1368,37 @@ function bindScan(){
     area.style.background = C.bg;
     area.innerHTML = `
       <div style="padding:30px 20px;text-align:center;width:100%">
-        <div style="width:60px;height:60px;border-radius:50%;background:${C.green};color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px">✓</div>
-        <div style="font-size:16px;font-weight:700;color:${C.primary};margin-bottom:16px">已识别</div>
+        <div style="width:60px;height:60px;border-radius:50%;background:${C.green};color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px">\u2713</div>
+        <div style="font-size:16px;font-weight:700;color:${C.primary};margin-bottom:16px">Recognized!</div>
         <div class="card" style="text-align:left;margin:0 0 16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.gray};font-size:12px">品牌</span><span style="font-weight:600;font-size:13px">Similac Advance</span></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.gray};font-size:12px">阶段</span><span style="font-weight:600;font-size:13px">1段 (0-6月)</span></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.gray};font-size:12px">条码</span><span style="font-size:12px">0300757xxxx</span></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.gray};font-size:12px">配比</span><span style="font-weight:600;font-size:13px">4.3g/oz</span></div>
-          <div style="height:1px;background:#F0F0F0;margin:8px 0"></div>
-          <div style="font-size:11px;color:${C.green}">✓ 云端品牌库匹配</div>
-          <div style="font-size:11px;color:${C.green}">✓ 该品牌已经称重校准验证</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.textSecondary};font-size:12px">Brand</span><span style="font-weight:600;font-size:13px">Kabrita Goat</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.textSecondary};font-size:12px">Stage</span><span style="font-weight:600;font-size:13px">Stage 1 (0-6 mo)</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.textSecondary};font-size:12px">Barcode</span><span style="font-size:12px">0300757xxxx</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:${C.textSecondary};font-size:12px">Ratio</span><span style="font-weight:600;font-size:13px">8.8g / 2oz</span></div>
+          <div style="height:1px;background:#F5F2EC;margin:8px 0"></div>
+          <div style="font-size:11px;color:${C.green}">\u2713 Cloud database matched</div>
+          <div style="font-size:11px;color:${C.green}">\u2713 Brand verified by weighing calibration</div>
         </div>
         <div style="margin-bottom:16px">
-          <div style="font-size:12px;color:${C.gray};margin-bottom:6px;text-align:left">配比浓度微调</div>
+          <div style="font-size:12px;color:${C.textSecondary};margin-bottom:6px;text-align:left">Concentration Adjustment</div>
           <div style="display:flex;align-items:center;gap:10px">
-            <span style="font-size:11px;color:${C.gray}">稀</span>
-            <div style="flex:1;height:4px;background:#E5E5E5;border-radius:2px;position:relative"><div style="position:absolute;left:50%;top:-6px;width:16px;height:16px;border-radius:50%;background:${C.accent};transform:translateX(-50%)"></div></div>
-            <span style="font-size:11px;color:${C.gray}">浓</span>
+            <span style="font-size:11px;color:${C.textSecondary}">Lighter</span>
+            <div style="flex:1;height:4px;background:#E8E2D8;border-radius:2px;position:relative"><div style="position:absolute;left:50%;top:-6px;width:16px;height:16px;border-radius:50%;background:${C.accent};transform:translateX(-50%)"></div></div>
+            <span style="font-size:11px;color:${C.textSecondary}">Stronger</span>
           </div>
-          <div style="text-align:center;font-size:11px;color:${C.primary};margin-top:4px">标准 4.3g/oz</div>
+          <div style="text-align:center;font-size:11px;color:${C.primary};margin-top:4px">Standard 8.8g per 2oz</div>
         </div>
-        <div class="btn btn-accent btn-block" onclick="switchPage('p1')">确认使用</div>
+        <div class="btn btn-accent btn-block" onclick="switchPage('p1')">Use This Formula</div>
       </div>
     `;
   };
   bottom.onclick = (e)=>{
     e.stopPropagation();
-    showToast('拍照识别：拍摄奶粉罐正面，OCR + 图像匹配，云端 24h 内回传校准参数');
+    showToast('Photo ID: Snap the front of the formula can \u2014 OCR + image matching, cloud response within 24h');
   };
 }
 
-// ===== 事件委托：data-goto 跳转 + data-action 动作 =====
+// ===== Event Delegation =====
 document.getElementById('screen').addEventListener('click', (e)=>{
   const goto = e.target.closest('[data-goto]');
   if(goto){
@@ -1183,24 +1412,29 @@ document.getElementById('screen').addEventListener('click', (e)=>{
     e.preventDefault();
     const a = action.dataset.action;
     const msgs = {
-      order:'下单成功！Similac 1段 × 1罐 · 预计 2 天内送达',
-      export:'报告导出中… PDF 将发送至 sarah@email.com',
-      share:'✅ 分享链接已复制到剪贴板',
-      adopt:'预设已更新！单次容量调整为 5oz',
-      remind:'已设置提醒：Emma 满 6 个月时通知切换 2 段',
-      reaction:'反应记录已保存',
-      growth:'数据录入弹层：日期 / 体重 / 身高',
-      fhir:'FHIR 标准报告导出中… 可直接发送给儿科医生',
-      toggle:'设置已更新',
-      modify:'修改订阅计划弹层',
-      cancel:'订阅已暂停，可随时恢复',
-      photo:'拍照识别：拍摄奶粉罐正面，OCR + 图像匹配，云端 24h 内回传校准参数',
+      addDevice:'Scanning for nearby devices...',
+      lock:'Child lock toggled',
+      volUp:'Volume increased',
+      volDown:'Volume decreased',
+      power:'Power cycling device...',
+      order:'Ordered! Kabrita Stage 1 \u00b7 1 Can arriving in 2 days',
+      export:'Exporting PDF \u2014 will be sent to sarah@email.com',
+      share:'\u2705 Link copied to clipboard',
+      adopt:'Preset updated! Single serving adjusted to 5oz',
+      remind:'Reminder set: Notify when Emma turns 6 months',
+      reaction:'Reaction saved to profile',
+      growth:'Data entry form: Date / Weight / Height',
+      fhir:'FHIR standard report exporting... ready to send to pediatrician',
+      toggle:'Setting updated',
+      modify:'Plan modification dialog opened',
+      cancel:'Subscription paused. Resume anytime.',
+      photo:'Photo ID: Take a photo of the can label \u2014 OCR + image matching, cloud response in 24h'
     };
     if(msgs[a]) showToast(msgs[a]);
   }
 });
 
-// ===== iPhone 自适应缩放 =====
+// ===== iPhone Scale =====
 function fitIphone(){
   const stage = document.querySelector('.stage');
   const wrap = document.getElementById('iphoneWrap');
@@ -1211,9 +1445,9 @@ function fitIphone(){
 }
 window.addEventListener('resize', fitIphone);
 
-// ===== 初始化 =====
+// ===== Init =====
 renderTree();
-switchPage('p1');
+switchPage('p0');
 fitIphone();
 </script>
 </body>
