@@ -27,3 +27,6 @@ npm-debug.log*
 *.tmp
 *.bak
 *.log
+
+# gh CLI 本地安装（项目内 .bin 目录）
+.bin/

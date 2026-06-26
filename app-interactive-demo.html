@@ -1180,11 +1180,12 @@ document.getElementById('screen').addEventListener('click', (e)=>{
   const action = e.target.closest('[data-action]');
   if(action){
     e.stopPropagation();
+    e.preventDefault();
     const a = action.dataset.action;
     const msgs = {
       order:'下单成功！Similac 1段 × 1罐 · 预计 2 天内送达',
       export:'报告导出中… PDF 将发送至 sarah@email.com',
-      share:'分享链接已复制到剪贴板',
+      share:'✅ 分享链接已复制到剪贴板',
       adopt:'预设已更新！单次容量调整为 5oz',
       remind:'已设置提醒：Emma 满 6 个月时通知切换 2 段',
       reaction:'反应记录已保存',
