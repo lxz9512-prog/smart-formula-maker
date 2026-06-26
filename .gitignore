@@ -1,0 +1,29 @@
+# WorkBuddy 工作目录元数据（含记忆、计划、临时文件）
+.workbuddy/
+
+# macOS
+.DS_Store
+__MACOSX/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 临时文件
+*.tmp
+*.bak
+*.log
