@@ -530,14 +530,11 @@ const PAGES = {
     module:'Data Insights',title:'Formula Stock',level:'L3',levelTag:'L3',tagClass:'tag-l3',
     desc:{
       scene:'Stock management / Auto-replenishment',
-      function:'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.',
+      func:'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.',
       interactions:['One-tap order \u2192 Order confirmation toast','Auto-subscribe \u2192 P13 Subscription Management','Ring indicator \u2192 Live remaining % and estimated days'],
       diff:'Tommee Tippee parents explicitly request app stock alerts but it was never built. We deliver precise stock estimation via weighing sensor + smart reordering.'
-    }.func || 'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.',
-    desc:{...PAGES.p5.desc, func:PAGES.p5.desc?.func || 'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.'},
+    },
     render:()=>{
-      PAGES.p5.desc.func = PPages.p5.desc?.func || 'Weighing sensor estimates remaining powder. Below threshold triggers reorder reminder. One-tap order + subscription option.';
-      return `
       ${navBar('Formula Stock',{back:1,backTarget:'p1'})}
       <div class="content" style="background:${C.bg}">
         <div class="card" style="text-align:center">
